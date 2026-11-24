@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAP Murdoku — Case: Showroom Disaster</title>
+<meta name="description" content="Discover SAP Murdoku — a logic puzzle mystery. Use the clues to find who sabotaged the demo laptop in the Discovery Showroom.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+<style>
+/* ============================================================  RESET */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:    #0070F2;
+  --blue-dk: #0057CC;
+  --bg:      #F4F6FA;
+  --white:   #ffffff;
+  --lobby:   #EBF4FF;
+  --demo:    #E8F5E9;
+  --kitchen: #FFF8E1;
+  --server:  #F0EEFF;
+  --ok:      #107E3E;
+  --err:     #BB0000;
+  --txt:     #1C2B33;
+  --muted:   #6A7580;
+  --border:  #D0D8E0;
+  --th:      52px;
+  --cs:      158px;
+}
+html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg); color:var(--txt); overflow:hidden; }
+
+/* ============================================================  SCREENS */
+.screen { display:none; width:100%; height:100%; flex-direction:column; overflow:hidden; }
+.screen.active { display:flex; }
+
+/* ============================================================  TOPBAR */
+.tb { height:var(--th); min-height:var(--th); background:var(--blue); display:flex; align-items:center; padding:0 18px; gap:10px; flex-shrink:0; z-index:50; }
+.sap-badge { background:#fff; color:var(--blue); font-weight:800; font-size:13px; padding:3px 8px; border-radius:3px; letter-spacing:.6px; flex-shrink:0; }
+.tb-sep   { width:1px; height:22px; background:rgba(255,255,255,.25); }
+.tb-title { color:#fff; font-size:15px; font-weight:600; }
+.tb-sub   { color:rgba(255,255,255,.7); font-size:11px; }
+.tb-spacer { flex:1; }
+.tb-tabs  { display:flex; gap:2px; }
+.tb-tab   { background:transparent; border:none; color:rgba(255,255,255,.75); font:600 13px/1 inherit; padding:7px 15px; border-radius:5px; cursor:pointer; transition:.15s; }
+.tb-tab:hover, .tb-tab.on { background:rgba(255,255,255,.18); color:#fff; }
+.tb-stat  { color:#fff; font-size:13px; display:flex; align-items:center; gap:5px; margin-left:12px; }
+.tb-stat b { font-size:14px; font-variant-numeric:tabular-nums; }
+.tb-help  { background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.3); border-radius:50%; width:30px; height:30px; color:#fff; font:700 14px/1 inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.15s; margin-left:10px; flex-shrink:0; }
+.tb-help:hover { background:rgba(255,255,255,.3); }
+
+/* ============================================================  START SCREEN */
+#sc-start .body { flex:1; display:flex; overflow:hidden; }
+.sl { width:50%; background:var(--blue); display:flex; flex-direction:column; justify-content:center; padding:28px 48px 28px 44px; color:#fff; overflow:hidden; }
+.sl-eyebrow { font-size:12px; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,.65); margin-bottom:7px; }
+.sl-title   { font-size:34px; font-weight:800; line-height:1.15; margin-bottom:8px; }
+.sl-diff    { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.15); border-radius:20px; padding:5px 14px; font-size:13px; margin-bottom:16px; }
+.sl-story   { font-size:14px; line-height:1.65; color:rgba(255,255,255,.9); margin-bottom:16px; padding-left:14px; border-left:3px solid rgba(255,255,255,.35); }
+
+/* how-to-play collapsible */
+.htp { background:rgba(255,255,255,.1); border-radius:8px; margin-bottom:20px; overflow:hidden; }
+.htp summary { padding:12px 16px; font-size:14px; font-weight:600; cursor:pointer; user-select:none; display:flex; align-items:center; justify-content:space-between; }
+.htp summary::-webkit-details-marker { display:none; }
+.htp-arrow { font-size:10px; transition:transform .2s; }
+.htp[open] .htp-arrow { transform:rotate(180deg); }
+.htp-body  { padding:12px 14px; border-top:1px solid rgba(255,255,255,.15); display:flex; flex-direction:column; gap:8px; }
+.htp-row   { display:flex; align-items:flex-start; gap:9px; font-size:12px; line-height:1.5; color:rgba(255,255,255,.85); }
+.htp-icon  { font-size:14px; flex-shrink:0; margin-top:1px; }
+
+.sl-label  { font-size:13px; color:rgba(255,255,255,.8); font-weight:600; margin-bottom:8px; }
+.sl-input  { width:100%; background:rgba(255,255,255,.14); border:1.5px solid rgba(255,255,255,.3); border-radius:8px; padding:11px 15px; color:#fff; font:14px/1 inherit; outline:none; transition:.15s; margin-bottom:14px; }
+.sl-input::placeholder { color:rgba(255,255,255,.4); }
+.sl-input:focus { border-color:rgba(255,255,255,.7); background:rgba(255,255,255,.2); }
+.sl-btn    { width:100%; background:#fff; color:var(--blue); border:none; border-radius:10px; padding:15px; font:700 16px/1 inherit; cursor:pointer; transition:.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.sl-btn:hover { background:#EBF4FF; transform:translateY(-1px); }
+.sl-btn:active { transform:none; }
+
+.sr { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 32px; gap:14px; background:var(--bg); overflow:hidden; }
+.sr-lbl  { font-size:12px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); font-weight:700; }
+.sr-hint { font-size:14px; color:var(--muted); text-align:center; max-width:420px; line-height:1.65; }
+
+/* ============================================================  GAME SCREEN */
+#sc-game .body { flex:1; display:flex; overflow:hidden; }
+
+/* ---- Clue + Bench Panel ---- */
+.cp { width:38%; min-width:300px; background:var(--white); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+.cp-hdr  { padding:10px 16px 8px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.cp-ttl  { font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); font-weight:700; }
+.cp-desc { font-size:12px; color:var(--muted); margin-top:2px; }
+.cp-list { flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px; }
+
+/* clue card — new active/done states */
+.cc { border:1.5px solid var(--border); border-radius:10px; padding:11px; cursor:pointer; transition:.18s; background:#fff; user-select:none; }
+.cc:hover:not(.cc-done) { border-color:var(--blue); box-shadow:0 2px 10px rgba(0,112,242,.12); }
+.cc.cc-active { box-shadow:0 2px 10px rgba(0,112,242,.12); }
+.cc.cc-done { opacity:.5; cursor:default; }
+.cc-hdr  { display:flex; align-items:center; gap:9px; margin-bottom:7px; }
+.cc-av   { width:34px; height:34px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+.cc-av svg { width:34px; height:34px; }
+.cc-name { font-size:14px; font-weight:700; }
+.cc-tag  { margin-left:auto; font-size:11px; background:#EFF4FF; color:var(--blue); padding:3px 10px; border-radius:10px; font-weight:700; }
+.cc-done-lbl { display:none; margin-left:auto; font-size:11px; color:var(--ok); font-weight:700; }
+.cc.cc-done .cc-tag      { display:none; }
+.cc.cc-done .cc-done-lbl { display:block; }
+.cc-txt  { font-size:13px; color:var(--txt); line-height:1.55; padding-top:7px; border-top:1px solid var(--border); }
+
+/* ---- Suspects Bench ---- */
+.bench-area { flex-shrink:0; border-top:1px solid var(--border); background:#FAFBFC; padding:8px 12px; }
+.bench-hdr  { font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); font-weight:700; margin-bottom:7px; display:flex; align-items:center; gap:6px; }
+.bench-hint { font-size:11px; color:var(--muted); font-weight:400; margin-left:auto; font-style:italic; text-transform:none; letter-spacing:0; }
+.bench-row  { display:flex; gap:7px; justify-content:space-between; }
+
+.bench-tile {
+  flex:1; max-width:80px;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:7px 4px 6px;
+  border:1.5px solid var(--border); border-radius:12px;
+  cursor:grab; user-select:none; background:#fff;
+  transition:all .18s; position:relative;
+}
+.bench-tile:hover { border-color:var(--blue); box-shadow:0 2px 8px rgba(0,112,242,.12); transform:translateY(-2px); }
+.bench-tile.dragging  { opacity:.4; cursor:grabbing; }
+.bench-tile.selected  { border-color:var(--blue); background:#EBF4FF; box-shadow:0 0 0 2px rgba(0,112,242,.3); }
+.bench-tile.placed    { opacity:.45; cursor:default; border-style:dashed; }
+.bench-tile.placed:hover { transform:none; box-shadow:none; border-color:var(--border); }
+.bench-av-wrap { width:50px; height:50px; border-radius:50%; overflow:hidden; }
+.bench-av-wrap svg { width:50px; height:50px; }
+.bench-name  { font-size:10px; font-weight:700; color:var(--txt); text-align:center; line-height:1.2; }
+.bench-loc   { font-size:9px; background:var(--demo); color:var(--ok); border-radius:8px; padding:1px 6px; font-weight:700; }
+.bench-ghost-label { position:absolute; bottom:4px; right:4px; font-size:9px; color:var(--blue); }
+.bench-select-hint { font-size:9px; color:var(--blue); text-align:center; }
+
+/* ---- Grid Panel ---- */
+.gp  { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 28px; gap:14px; overflow:auto; }
+.gw  { position:relative; }
+.col-hdrs { display:flex; padding-left:26px; margin-bottom:3px; }
+.col-hdr  { width:var(--cs); text-align:center; font-size:11px; font-weight:700; color:var(--muted); }
+.grid-outer { display:flex; }
+.row-lbls   { display:flex; flex-direction:column; }
+.row-lbl    { width:24px; height:var(--cs); display:flex; align-items:center; justify-content:flex-end; padding-right:5px; font-size:11px; font-weight:700; color:var(--muted); }
+
+.game-grid { display:grid; grid-template-columns:repeat(4,var(--cs)); grid-template-rows:repeat(4,var(--cs)); }
+
+.gc {
+  width:var(--cs); height:var(--cs);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  cursor:pointer; transition:filter .12s, background .15s;
+  position:relative; user-select:none;
+}
+.gc:hover:not(.gc-blk) { filter:brightness(.92); }
+.gc.gc-blk  { cursor:not-allowed; }
+.gc.gc-blk::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(0,0,0,.045) 5px,rgba(0,0,0,.045) 10px); pointer-events:none; }
+.gc.gc-conflict { outline:2.5px solid var(--err); outline-offset:-2.5px; z-index:3; }
+.gc.drag-over   { outline:3px dashed var(--blue); outline-offset:-3px; background:rgba(0,112,242,.08) !important; z-index:4; }
+.gc.drag-over.gc-blk { outline:none; background:rgba(0,0,0,.04) !important; }
+
+.gc-blk-icon { font-size:24px; position:relative; z-index:2; }
+.gc-blk-lbl  { font-size:9px; color:var(--muted); margin-top:3px; position:relative; z-index:2; text-align:center; max-width:76px; line-height:1.2; }
+.gc-hint     { font-size:22px; color:rgba(0,112,242,.18); opacity:0; transition:opacity .12s; pointer-events:none; }
+.gc:hover:not(.gc-blk) .gc-hint { opacity:1; }
+
+/* person tile in grid */
+.gc-person { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:grab; }
+.gc-av-wrap { width:44px; height:44px; border-radius:50%; overflow:hidden; border:2.5px solid rgba(255,255,255,.6); box-shadow:0 2px 6px rgba(0,0,0,.22); }
+.gc-av-wrap svg { width:44px; height:44px; }
+.gc-av-wrap.victim { border-color:#FF6B6B; box-shadow:0 0 0 2px rgba(187,0,0,.2), 0 2px 6px rgba(0,0,0,.22); }
+.gc-nm    { font-size:9.5px; font-weight:600; }
+.gc-badge { font-size:8px; color:var(--err); font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+
+/* room labels strip */
+.room-strip { padding-left:26px; margin-top:5px; display:flex; flex-direction:column; gap:3px; }
+.room-row   { display:flex; }
+.room-lbl   { display:flex; align-items:center; justify-content:center; height:22px; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; border-radius:4px; }
+
+/* accuse */
+.accuse-row  { display:flex; align-items:center; gap:12px; }
+.accuse-hint { font-size:12px; color:var(--muted); }
+.accuse-btn  { background:var(--blue); color:#fff; border:none; border-radius:8px; padding:11px 26px; font:700 14px/1 inherit; cursor:pointer; transition:.15s; display:flex; align-items:center; gap:7px; }
+.accuse-btn:hover:not(:disabled) { background:var(--blue-dk); transform:translateY(-1px); }
+.accuse-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+.hint-btn { background:none; border:1.5px solid var(--border); border-radius:8px; padding:10px 14px; font:600 13px/1 inherit; cursor:pointer; color:var(--muted); transition:.15s; }
+.hint-btn:hover { background:var(--bg); border-color:#C87A00; color:#C87A00; }
+
+/* ============================================================  PICKER */
+#picker { position:fixed; background:#fff; border:1.5px solid var(--border); border-radius:11px; box-shadow:0 8px 30px rgba(0,0,0,.18); padding:7px; z-index:2000; display:none; flex-direction:column; gap:3px; min-width:168px; }
+#picker.open { display:flex; }
+.pk-ttl  { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:700; padding:3px 8px 6px; border-bottom:1px solid var(--border); margin-bottom:2px; }
+.pk-item { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:7px; cursor:pointer; font:500 13px/1 inherit; border:none; background:none; width:100%; text-align:left; transition:background .1s; color:var(--txt); }
+.pk-item:hover { background:var(--bg); }
+.pk-sm-av { width:28px; height:28px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+.pk-sm-av svg { width:28px; height:28px; }
+.pk-sep   { height:1px; background:var(--border); margin:2px 0; }
+.pk-clear { display:flex; align-items:center; justify-content:center; padding:6px; border-radius:6px; cursor:pointer; font:12px/1 inherit; color:var(--muted); border:none; background:none; width:100%; transition:background .1s; }
+.pk-clear:hover { background:var(--bg); }
+
+/* ============================================================  END SCREEN */
+#sc-end .body { flex:1; display:flex; overflow:hidden; }
+.el { width:42%; background:var(--blue); display:flex; flex-direction:column; justify-content:center; padding:44px 40px; color:#fff; overflow-y:auto; }
+.el-icon  { font-size:52px; margin-bottom:14px; }
+.el-title { font-size:27px; font-weight:800; margin-bottom:6px; }
+.el-sub   { font-size:13px; color:rgba(255,255,255,.75); margin-bottom:26px; }
+.score-box { background:rgba(255,255,255,.15); border-radius:10px; padding:16px 20px; text-align:center; margin-bottom:22px; }
+.score-lbl { font-size:10.5px; text-transform:uppercase; letter-spacing:1.5px; color:rgba(255,255,255,.7); margin-bottom:5px; }
+.score-val { font-size:42px; font-weight:800; }
+.el-stats { display:flex; flex-direction:column; gap:11px; margin-bottom:26px; }
+.el-stat  { display:flex; align-items:center; gap:9px; font-size:13px; }
+.el-stat-lbl { color:rgba(255,255,255,.7); }
+.el-stat-val { font-size:15px; font-weight:700; margin-left:auto; }
+.el-btns  { display:flex; gap:9px; }
+.el-btn   { flex:1; background:rgba(255,255,255,.15); color:#fff; border:1.5px solid rgba(255,255,255,.3); border-radius:8px; padding:10px; font:600 13px/1 inherit; cursor:pointer; transition:.15s; text-align:center; }
+.el-btn:hover { background:rgba(255,255,255,.25); }
+.el-btn.primary { background:#fff; color:var(--blue); border-color:#fff; }
+.el-btn.primary:hover { background:#EBF4FF; }
+
+.er { flex:1; display:flex; flex-direction:column; justify-content:center; padding:44px 40px; background:var(--bg); overflow-y:auto; gap:16px; }
+.reveal-card { background:#fff; border-radius:12px; padding:26px; box-shadow:0 4px 16px rgba(0,0,0,.07); }
+.rev-hdr  { display:flex; align-items:center; gap:13px; margin-bottom:14px; }
+.rev-av   { width:52px; height:52px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+.rev-av svg { width:52px; height:52px; }
+.rev-name { font-size:20px; font-weight:800; }
+.rev-role { font-size:11px; color:var(--err); font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.rev-txt  { font-size:13.5px; line-height:1.65; color:var(--txt); }
+.reveal-flavor { font-size:12.5px; color:var(--muted); font-style:italic; line-height:1.65; background:#F8FAFE; border-radius:8px; padding:13px 16px; border-left:3px solid var(--blue); }
+
+/* ============================================================  LEADERBOARD */
+#sc-lb .body { flex:1; overflow-y:auto; padding:22px; display:flex; flex-direction:column; align-items:center; }
+.lb-inner { width:100%; max-width:560px; }
+.lb-top  { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.lb-back { background:#fff; border:1.5px solid var(--border); border-radius:7px; padding:7px 16px; font:inherit; font-size:13px; cursor:pointer; color:var(--txt); transition:.15s; }
+.lb-back:hover { background:var(--bg); }
+.lb-h    { font-size:18px; font-weight:700; }
+.lb-sub  { font-size:12px; color:var(--muted); margin-bottom:14px; }
+.lb-tbl  { background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.06); overflow:hidden; }
+.lb-row  { display:grid; grid-template-columns:44px 1fr 80px 80px; align-items:center; padding:11px 16px; gap:10px; border-bottom:1px solid var(--border); }
+.lb-row:last-child { border-bottom:none; }
+.lb-row.lb-hdr { background:#F8FAFE; font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:700; }
+.lb-row.lb-me  { background:#EBF4FF; }
+.lb-rank  { font-weight:700; font-size:15px; text-align:center; }
+.lb-name  { font-size:13.5px; font-weight:500; }
+.lb-time  { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; }
+.lb-score { font-size:14px; font-weight:700; color:var(--blue); text-align:right; }
+.lb-empty { padding:44px 20px; text-align:center; color:var(--muted); font-size:14px; }
+
+/* ============================================================  HELP MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9000; display:none; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal-box  { background:#fff; border-radius:14px; width:min(660px,92vw); max-height:88vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+.modal-top  { background:var(--blue); padding:20px 24px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.modal-ttl  { color:#fff; font-size:17px; font-weight:700; flex:1; }
+.modal-x    { background:rgba(255,255,255,.15); border:none; color:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:.15s; }
+.modal-x:hover { background:rgba(255,255,255,.3); }
+.modal-body { overflow-y:auto; padding:24px; display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.modal-sect { display:flex; flex-direction:column; gap:10px; }
+.modal-sh   { font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); font-weight:700; margin-bottom:4px; }
+.modal-item { display:flex; align-items:flex-start; gap:10px; }
+.modal-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.modal-text { font-size:13px; line-height:1.6; color:var(--txt); }
+.modal-text strong { font-weight:700; color:var(--txt); }
+.modal-foot { border-top:1px solid var(--border); padding:14px 24px; display:flex; justify-content:flex-end; flex-shrink:0; }
+.modal-close-btn { background:var(--blue); color:#fff; border:none; border-radius:8px; padding:10px 24px; font:600 14px/1 inherit; cursor:pointer; transition:.15s; }
+.modal-close-btn:hover { background:var(--blue-dk); }
+
+/* ============================================================  ANIMATIONS */
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+.shaking { animation:shake .42s ease; }
+
+@keyframes toastIn { 0%{opacity:0;transform:translateY(-8px)} 12%{opacity:1;transform:translateY(0)} 75%{opacity:1} 100%{opacity:0} }
+.toast { position:fixed; top:64px; right:18px; background:var(--err); color:#fff; padding:9px 16px; border-radius:8px; font-size:13px; font-weight:600; z-index:3000; pointer-events:none; animation:toastIn 2.2s ease forwards; }
+
+@keyframes pop { from{transform:scale(.6);opacity:0} to{transform:scale(1);opacity:1} }
+.pop { animation:pop .22s cubic-bezier(.34,1.56,.64,1); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation:fadeUp .35s ease forwards; }
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
+
+/* ============================================================  PENCIL MARKS */
+.cell-marks { position:absolute; inset:5px; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px; align-items:center; justify-items:center; pointer-events:none; }
+.mark-dot { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; opacity:.82; box-shadow:0 1px 3px rgba(0,0,0,.2); animation:pop .18s ease; }
+
+/* ============================================================  TUTORIAL OVERLAY */
+#tut-overlay { position:fixed; inset:0; background:rgba(0,0,0,.78); z-index:8000; display:flex; align-items:center; justify-content:center; }
+#tut-overlay.hidden { display:none; }
+.tut-box { background:#fff; border-radius:16px; width:min(720px,94vw); max-height:92vh; box-shadow:0 24px 70px rgba(0,0,0,.32); overflow:hidden; display:flex; flex-direction:column; }
+.tut-top { background:var(--blue); padding:20px 28px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.tut-top-ttl { color:#fff; font-size:18px; font-weight:700; }
+.tut-skip { background:rgba(255,255,255,.15); border:none; color:rgba(255,255,255,.85); font:13px/1 inherit; padding:7px 16px; border-radius:20px; cursor:pointer; margin-left:auto; }
+.tut-skip:hover { background:rgba(255,255,255,.28); color:#fff; }
+.tut-body { padding:32px 36px 24px; overflow-y:auto; }
+.tut-step-icon { font-size:52px; margin-bottom:14px; }
+.tut-step-title { font-size:24px; font-weight:800; color:var(--txt); margin-bottom:12px; }
+.tut-step-text { font-size:16px; line-height:1.7; color:var(--muted); margin-bottom:20px; }
+.tut-vis { background:#F0F5FF; border-radius:12px; padding:20px; margin-bottom:6px; }
+.tut-dots { display:flex; gap:8px; justify-content:center; padding:14px 0 6px; }
+.tut-dot { width:10px; height:10px; border-radius:50%; background:var(--border); transition:.2s; }
+.tut-dot.on { background:var(--blue); width:26px; border-radius:5px; }
+.tut-nav { display:flex; align-items:center; justify-content:space-between; padding:18px 28px 22px; border-top:1px solid var(--border); gap:12px; flex-shrink:0; }
+.tut-btn-back { background:none; border:1.5px solid var(--border); border-radius:9px; padding:12px 24px; font:600 15px/1 inherit; cursor:pointer; color:var(--muted); transition:.15s; }
+.tut-btn-back:hover { border-color:var(--txt); color:var(--txt); }
+.tut-btn-next { background:var(--blue); color:#fff; border:none; border-radius:10px; padding:14px 32px; font:700 16px/1 inherit; cursor:pointer; transition:.15s; margin-left:auto; }
+.tut-btn-next:hover { background:var(--blue-dk); }
+
+/* ============================================================  MARK MODE */
+.gc.mark-mode-cell { cursor:cell !important; }
+.gc.mark-mode-cell:hover { filter:none !important; outline:2.5px dashed rgba(0,112,242,.5) !important; outline-offset:-3px; background:rgba(0,112,242,.05) !important; }
+.mark-mode-bar { background:#EBF4FF; border:1.5px solid rgba(0,112,242,.25); border-radius:9px; padding:9px 14px; display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--blue); }
+.mark-mode-bar .mmb-cancel { background:none; border:none; cursor:pointer; font-size:18px; color:var(--muted); margin-left:auto; padding:2px 6px; border-radius:5px; transition:.12s; }
+.mark-mode-bar .mmb-cancel:hover { background:rgba(0,0,0,.07); color:var(--txt); }
+
+/* Row/Column X-marks (classic Murdoku elimination) */
+.gc-x-row, .gc-x-col {
+  position:absolute; bottom:7px;
+  width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800; color:white;
+  pointer-events:none; opacity:.5;
+}
+.gc-x-row { left:7px; }
+.gc-x-col { right:7px; }
+
+/* Tipp-Toggle in Hinweiskarten */
+.cc-tip-btn { display:block; background:none; border:none; border-top:1px dashed var(--border); color:var(--muted); font:12px/1 inherit; cursor:pointer; padding:5px 0 0; margin-top:5px; width:100%; text-align:left; transition:.12s; }
+.cc-tip-btn:hover { color:var(--blue); }
+.cc-tip-txt { display:none; font-size:12px; color:var(--txt); line-height:1.65; margin-top:7px; background:#EBF4FF; border-radius:7px; padding:9px 11px; border-left:3px solid var(--blue); }
+.cc-tip-txt.open { display:block; }
+.cc-done .cc-tip-btn, .cc-done .cc-tip-txt { display:none; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================  START -->
+<div id="sc-start" class="screen active">
+  <div class="body">
+    <div class="sl">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:20px">
+        <div style="background:rgba(255,255,255,.18);color:#fff;font-weight:800;font-size:13px;padding:3px 8px;border-radius:3px;letter-spacing:.6px">SAP</div>
+        <span style="color:rgba(255,255,255,.55);font-size:12.5px">Discover SAP &nbsp;·&nbsp; Murdoku</span>
+      </div>
+      <div class="sl-eyebrow">Case File #001</div>
+      <div class="sl-title">Case: Showroom<br>Disaster</div>
+      <div class="sl-diff">⭐ Easy &nbsp;·&nbsp; 4 × 4 Grid</div>
+      <div class="sl-story">
+        Just before the Discovery Showroom tour begins, the main demo laptop goes dark.
+        Someone sabotaged it. Using witness statements, find out who was alone with the
+        victim — the laptop.
+      </div>
+
+      <!-- How to Play collapsible -->
+      <details class="htp">
+        <summary>How to Play <span class="htp-arrow">▼</span></summary>
+        <div class="htp-body">
+          <div class="htp-row"><span class="htp-icon">🎯</span><span>Finde den Täter — wer war allein mit dem Laptop im Demo Room?</span></div>
+          <div class="htp-row"><span class="htp-icon">📋</span><span>Klicke Hinweise an → Buchstaben erscheinen auf möglichen Feldern.</span></div>
+          <div class="htp-row"><span class="htp-icon">✋</span><span>Ziehe Verdächtige auf Felder — jede Person nur 1× pro Zeile &amp; Spalte.</span></div>
+          <div class="htp-row"><span class="htp-icon">⚖️</span><span>Klicke "Anklage" wenn alle platziert sind.</span></div>
+        </div>
+      </details>
+
+      <div class="sl-label">Your Detective Name</div>
+      <input id="usr" class="sl-input" type="text" placeholder="Enter your name…" maxlength="30" autocomplete="off">
+      <button class="sl-btn" onclick="startGame()">Start Investigation &nbsp;→</button>
+    </div>
+
+    <div class="sr">
+      <div class="sr-lbl">Building Floor Plan</div>
+      <svg viewBox="0 0 284 284"
+           style="width:min(calc(50vw - 80px), calc(100vh - 180px));height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,.15));border-radius:6px;display:block">
+        <rect x="1"   y="1"   width="138" height="138" fill="#EBF4FF"/>
+        <rect x="145" y="1"   width="138" height="138" fill="#E8F5E9"/>
+        <rect x="1"   y="145" width="138" height="138" fill="#FFF8E1"/>
+        <rect x="145" y="145" width="138" height="138" fill="#F0EEFF"/>
+        <line x1="141.5" y1="0"   x2="141.5" y2="284" stroke="#1C2B33" stroke-width="5"/>
+        <line x1="0"     y1="141.5" x2="284" y2="141.5" stroke="#1C2B33" stroke-width="5"/>
+        <line x1="70"  y1="1"   x2="70"  y2="139" stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <line x1="1"   y1="70"  x2="139" y2="70"  stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <line x1="214" y1="1"   x2="214" y2="139" stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <line x1="145" y1="70"  x2="283" y2="70"  stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <line x1="70"  y1="145" x2="70"  y2="283" stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <line x1="1"   y1="214" x2="139" y2="214" stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <line x1="214" y1="145" x2="214" y2="283" stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <line x1="145" y1="214" x2="283" y2="214" stroke="rgba(0,0,0,.09)" stroke-width="1"/>
+        <text x="70"  y="108" text-anchor="middle" fill="#0057CC" font-size="16" font-family="Arial" font-weight="700">Lobby</text>
+        <text x="214" y="101" text-anchor="middle" fill="#107E3E" font-size="14" font-family="Arial" font-weight="700">Demo</text>
+        <text x="214" y="118" text-anchor="middle" fill="#107E3E" font-size="14" font-family="Arial" font-weight="700">Room</text>
+        <text x="70"  y="176" text-anchor="middle" fill="#C87A00" font-size="16" font-family="Arial" font-weight="700">Kitchen</text>
+        <text x="214" y="176" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Server</text>
+        <text x="214" y="193" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Room</text>
+        <rect x="10"  y="10"  width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
+        <text x="35"  y="33"  text-anchor="middle" font-size="20">🖥️</text>
+        <text x="35"  y="51"  text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Desk</text>
+        <rect x="154" y="154" width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
+        <text x="179" y="177" text-anchor="middle" font-size="20">🗄️</text>
+        <text x="179" y="195" text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Rack</text>
+        <rect x="79"  y="223" width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
+        <text x="104" y="246" text-anchor="middle" font-size="20">🌿</text>
+        <text x="104" y="264" text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Plant</text>
+        <rect x=".5" y=".5" width="283" height="283" fill="none" stroke="#1C2B33" stroke-width="3" rx="4"/>
+      </svg>
+      <div class="sr-hint">Place each suspect in a unique row and column.<br>Find who was alone with the Laptop.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================  GAME -->
+<div id="sc-game" class="screen">
+  <div class="tb">
+    <div class="sap-badge">SAP</div>
+    <div class="tb-sep"></div>
+    <div>
+      <div class="tb-title">Murdoku</div>
+      <div class="tb-sub">Case: Showroom Disaster</div>
+    </div>
+    <div class="tb-tabs">
+      <button class="tb-tab on" id="tab-puzzle" onclick="switchTab('puzzle')">🔍 Puzzle</button>
+      <button class="tb-tab"    id="tab-lb"     onclick="switchTab('lb')">🏆 Leaderboard</button>
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="tb-stat">⏱ <b id="timerEl">0:00</b></div>
+    <div class="tb-stat" style="margin-left:14px">✏️ <b id="clueEl">0</b> Notizen</div>
+    <button class="tb-help" onclick="openHelp()" title="How to Play">?</button>
+  </div>
+
+  <div class="body">
+    <!-- Clue + Bench Panel -->
+    <div class="cp">
+      <div class="cp-hdr">
+        <div class="cp-ttl">Evidence Board</div>
+        <div class="cp-desc">Karte klicken → Notiz-Modus → Felder selbst anklicken</div>
+      </div>
+      <div class="cp-list" id="clueList"></div>
+
+      <!-- Suspects Bench -->
+      <div class="bench-area" id="benchArea">
+        <div class="bench-hdr">
+          Suspects &amp; Victim
+          <span class="bench-hint" id="benchHint">Drag onto grid or click to select</span>
+        </div>
+        <div class="bench-row" id="benchRow"></div>
+      </div>
+    </div>
+
+    <!-- Grid Panel -->
+    <div class="gp">
+      <div class="gw">
+        <div class="col-hdrs">
+          <div class="col-hdr">Col 1</div>
+          <div class="col-hdr">Col 2</div>
+          <div class="col-hdr">Col 3</div>
+          <div class="col-hdr">Col 4</div>
+        </div>
+        <div class="grid-outer">
+          <div class="row-lbls">
+            <div class="row-lbl">R1</div>
+            <div class="row-lbl">R2</div>
+            <div class="row-lbl">R3</div>
+            <div class="row-lbl">R4</div>
+          </div>
+          <div class="game-grid" id="gameGrid"></div>
+        </div>
+        <div class="room-strip">
+          <div class="room-row">
+            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--lobby);color:#0057CC">Lobby</div>
+            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--demo);color:#107E3E;margin-left:1px">Demo Room</div>
+          </div>
+          <div class="room-row" style="margin-top:3px">
+            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--kitchen);color:#C87A00">Kitchen</div>
+            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--server);color:#6B46C1;margin-left:1px">Server Room</div>
+          </div>
+        </div>
+      </div>
+      <!-- Mark-mode bar — shown when a clue is in mark mode -->
+      <div class="mark-mode-bar" id="markModeBar" style="display:none">
+        <span id="markModeIcon">✏️</span>
+        <span id="markModeTxt">Notiz-Modus aktiv — klicke leere Felder</span>
+        <button class="mmb-cancel" onclick="cancelMarkMode()" title="Notiz-Modus beenden">✕</button>
+      </div>
+
+      <div class="accuse-row">
+        <div class="accuse-hint" id="accuseHint">Alle 4 Figuren platzieren</div>
+        <button class="accuse-btn" id="accuseBtn" disabled onclick="submitSolution()">Anklage &nbsp;→</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================  END -->
+<div id="sc-end" class="screen">
+  <div class="tb">
+    <div class="sap-badge">SAP</div>
+    <div class="tb-sep"></div>
+    <div class="tb-title">Murdoku &nbsp;·&nbsp; Case Closed</div>
+  </div>
+  <div class="body">
+    <div class="el">
+      <div class="el-icon"  id="endIcon">🎉</div>
+      <div class="el-title" id="endTitle">Case Solved!</div>
+      <div class="el-sub"   id="endSub">Excellent detective work.</div>
+      <div class="score-box">
+        <div class="score-lbl">Final Score</div>
+        <div class="score-val" id="endScore">—</div>
+      </div>
+      <div class="el-stats" id="endStats"></div>
+      <div class="el-btns">
+        <button class="el-btn"         onclick="goLB('end')">🏆 Leaderboard</button>
+        <button class="el-btn primary" onclick="resetGame()">↺ Play Again</button>
+      </div>
+    </div>
+    <div class="er">
+      <div class="reveal-card fade-up">
+        <div class="rev-hdr">
+          <div class="rev-av" id="revAv"></div>
+          <div>
+            <div class="rev-name" id="revName">Sophie</div>
+            <div class="rev-role">The Saboteur</div>
+          </div>
+        </div>
+        <div class="rev-txt" id="revTxt">Sophie was found alone with the Laptop in the Demo Room.</div>
+      </div>
+      <div class="reveal-flavor fade-up" id="revFlavor" style="animation-delay:.12s">
+        "I was just checking the cable connections," Sophie insisted. But the logs told a different story.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================  LEADERBOARD -->
+<div id="sc-lb" class="screen">
+  <div class="tb">
+    <div class="sap-badge">SAP</div>
+    <div class="tb-sep"></div>
+    <div class="tb-title">Murdoku &nbsp;·&nbsp; Hall of Detectives</div>
+  </div>
+  <div class="body">
+    <div class="lb-inner">
+      <div class="lb-top">
+        <button class="lb-back" onclick="lbBack()">← Back</button>
+        <div class="lb-h">🏆 Leaderboard</div>
+      </div>
+      <div class="lb-sub">Case: Showroom Disaster</div>
+      <div class="lb-tbl" id="lbTable"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================  HELP MODAL -->
+<div class="modal-overlay" id="helpModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-ttl">🔍 How to Play Murdoku</div>
+      <button class="modal-x" onclick="closeHelp()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-sect">
+        <div class="modal-sh">Das Ziel</div>
+        <div class="modal-item">
+          <span class="modal-icon">🎯</span>
+          <div class="modal-text">Finde den <strong>Täter</strong> — die einzige Person, die allein mit dem Laptop im Demo Room war. Klicke "Anklage", sobald alle korrekt platziert sind.</div>
+        </div>
+        <div class="modal-item">
+          <span class="modal-icon">📐</span>
+          <div class="modal-text">Platziere alle 4 Personen so, dass <strong>keine zwei in derselben Zeile oder Spalte</strong> stehen (Sudoku-Logik). Blockierte Felder (Möbel) können nicht genutzt werden.</div>
+        </div>
+        <div class="modal-item">
+          <span class="modal-icon">🏠</span>
+          <div class="modal-text">Das Raster hat 4 Räume à 2×2. Der Raum, in dem jemand landet, ist entscheidend — nutze ihn, um den Täter zu identifizieren!</div>
+        </div>
+      </div>
+
+      <div class="modal-sect">
+        <div class="modal-sh">Steuerung</div>
+        <div class="modal-item">
+          <span class="modal-icon">📋</span>
+          <div class="modal-text"><strong>Klicke eine Hinweiskarte</strong> — der Anfangsbuchstabe der Person erscheint auf allen möglichen Feldern. Klicke erneut zum Deaktivieren.</div>
+        </div>
+        <div class="modal-item">
+          <span class="modal-icon">🖱️</span>
+          <div class="modal-text"><strong>Ziehe</strong> ein Porträt aus der Bank links unten auf ein freies Feld — oder klicke es an und dann das Zielfeld.</div>
+        </div>
+        <div class="modal-item">
+          <span class="modal-icon">↩️</span>
+          <div class="modal-text"><strong>Klicke ein besetztes Feld</strong> um das Menü zu öffnen — Person wechseln oder Feld leeren.</div>
+        </div>
+        <div class="modal-item">
+          <span class="modal-icon">🔁</span>
+          <div class="modal-text"><strong>Ziehe eine Person auf dem Grid</strong> auf ein neues Feld zum Verschieben, oder zurück auf die Bank zum Entfernen.</div>
+        </div>
+
+        <div class="modal-sh" style="margin-top:4px">Konflikte</div>
+        <div class="modal-item">
+          <span class="modal-icon">⚠️</span>
+          <div class="modal-text">Felder mit einem <strong style="color:#BB0000">roten Rahmen</strong> haben einen Konflikt — zwei Personen in Zeile oder Spalte. Behebe sie vor der Anklage!</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="modal-close-btn" onclick="closeHelp()">Got it — Start Investigating!</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================  TUTORIAL OVERLAY -->
+<div id="tut-overlay" class="hidden">
+  <div class="tut-box">
+    <div class="tut-top">
+      <span style="font-size:18px">📋</span>
+      <div class="tut-top-ttl">Spielanleitung</div>
+      <button class="tut-skip" onclick="closeTutorial()">Überspringen</button>
+    </div>
+    <div class="tut-body">
+      <div class="tut-step-icon" id="tut-icon">🔍</div>
+      <div class="tut-step-title" id="tut-title">Dein Auftrag</div>
+      <div class="tut-step-text" id="tut-text"></div>
+      <div class="tut-vis" id="tut-vis"></div>
+      <div class="tut-dots" id="tut-dots"></div>
+    </div>
+    <div class="tut-nav">
+      <button class="tut-btn-back" id="tut-back" onclick="tutPrev()">← Zurück</button>
+      <button class="tut-btn-next" id="tut-next" onclick="tutNext()">Weiter →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================  PICKER -->
+<div id="picker"></div>
+
+
+<!-- ============================================================  JAVASCRIPT -->
+<script>
+/* ================================================================
+   AVATAR SVGs  —  viewBox="0 0 60 60", scales via CSS width/height
+   ================================================================ */
+const AV = {};
+
+AV.laptop = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+<circle cx="30" cy="30" r="30" fill="#4A5568"/>
+<rect x="10" y="16" width="40" height="27" rx="3" fill="#2D3748"/>
+<rect x="12" y="18" width="36" height="21" rx="2" fill="#1A202C"/>
+<rect x="13" y="19" width="34" height="18" rx="1.5" fill="#1E3A70"/>
+<rect x="15" y="21" width="14" height="2.5" rx="1" fill="#63B3ED"/>
+<rect x="15" y="26" width="22" height="1.5" rx=".75" fill="#90CDF4" opacity=".7"/>
+<rect x="15" y="30" width="16" height="1.5" rx=".75" fill="#90CDF4" opacity=".5"/>
+<rect x="31" y="21" width="14" height="6" rx="1.5" fill="#0070F2"/>
+<text x="38" y="26" text-anchor="middle" font-family="Arial" font-size="4.5" font-weight="bold" fill="white">SAP</text>
+<rect x="8" y="43" width="44" height="4" rx="2" fill="#4A5568"/>
+<rect x="22" y="43" width="16" height="2" rx="1" fill="#2D3748"/>
+</svg>`;
+
+AV.bastian = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+<circle cx="30" cy="30" r="30" fill="#0070F2"/>
+<ellipse cx="30" cy="19" rx="13" ry="7" fill="#1F140C"/>
+<rect x="17" y="19" width="26" height="6" rx="2" fill="#1F140C"/>
+<ellipse cx="30" cy="29" rx="12.5" ry="13" fill="#FBCB99"/>
+<ellipse cx="17.5" cy="28.5" rx="3" ry="4.5" fill="#F0AC78"/>
+<ellipse cx="42.5" cy="28.5" rx="3" ry="4.5" fill="#F0AC78"/>
+<rect x="19" y="23.5" width="9.5" height="7" rx="2.5" fill="none" stroke="#0D0D1A" stroke-width="1.6"/>
+<rect x="31.5" y="23.5" width="9.5" height="7" rx="2.5" fill="none" stroke="#0D0D1A" stroke-width="1.6"/>
+<line x1="28.5" y1="27" x2="31.5" y2="27" stroke="#0D0D1A" stroke-width="1.2"/>
+<line x1="14" y1="26" x2="19" y2="26" stroke="#0D0D1A" stroke-width="1"/>
+<line x1="41" y1="26" x2="46" y2="26" stroke="#0D0D1A" stroke-width="1"/>
+<circle cx="23.8" cy="27" r="2" fill="#2C3E50"/>
+<circle cx="36.2" cy="27" r="2" fill="#2C3E50"/>
+<path d="M29 31.5 Q30 33 31 31.5" stroke="#D4905A" stroke-width="1" fill="none"/>
+<path d="M25 35.5 Q30 39 35 35.5" stroke="#B07040" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M12 60 Q20.5 47 30 46 Q39.5 47 48 60Z" fill="#0057CC"/>
+<polygon points="30,46 26.5,52.5 30,56.5 33.5,52.5" fill="white"/>
+<polygon points="30,47 28.5,51.5 30,50" fill="#BB0000"/>
+</svg>`;
+
+AV.sophie = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+<circle cx="30" cy="30" r="30" fill="#107E3E"/>
+<ellipse cx="30" cy="22" rx="15" ry="11" fill="#7B4A1E"/>
+<rect x="13" y="22" width="5" height="22" rx="2.5" fill="#7B4A1E"/>
+<rect x="42" y="22" width="5" height="22" rx="2.5" fill="#7B4A1E"/>
+<ellipse cx="30" cy="29.5" rx="12.5" ry="13" fill="#F8C898"/>
+<ellipse cx="17.5" cy="29" rx="3" ry="4.5" fill="#F0B47A"/>
+<ellipse cx="42.5" cy="29" rx="3" ry="4.5" fill="#F0B47A"/>
+<ellipse cx="30" cy="18" rx="14.5" ry="6" fill="#7B4A1E"/>
+<path d="M21 22.5 Q24.5 21 28 22.5" stroke="#5A3010" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M32 22.5 Q35.5 21 39 22.5" stroke="#5A3010" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<ellipse cx="24" cy="27" rx="2.8" ry="3.2" fill="white"/>
+<ellipse cx="36" cy="27" rx="2.8" ry="3.2" fill="white"/>
+<circle cx="24.5" cy="27.5" r="2" fill="#2D1F14"/>
+<circle cx="36.5" cy="27.5" r="2" fill="#2D1F14"/>
+<circle cx="30" cy="32.5" r="1.5" fill="#E09A70" opacity=".6"/>
+<path d="M24.5 36.5 Q30 41 35.5 36.5" stroke="#C07048" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<circle cx="17.5" cy="33.5" r="2.5" fill="#FFD700"/>
+<circle cx="42.5" cy="33.5" r="2.5" fill="#FFD700"/>
+<path d="M10 60 Q19 48 30 47 Q41 48 50 60Z" fill="#085A2A"/>
+</svg>`;
+
+AV.marco = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+<circle cx="30" cy="30" r="30" fill="#D4900A"/>
+<ellipse cx="30" cy="20.5" rx="13" ry="8" fill="#111"/>
+<polygon points="20,20 18,8 24,18" fill="#111"/>
+<polygon points="27,17 26,5 31,16" fill="#111"/>
+<polygon points="34,16 36,5 39,17" fill="#111"/>
+<ellipse cx="30" cy="30" rx="13" ry="13.5" fill="#DBA878"/>
+<ellipse cx="17" cy="29" rx="3.5" ry="5" fill="#CB9860"/>
+<ellipse cx="43" cy="29" rx="3.5" ry="5" fill="#CB9860"/>
+<path d="M20.5 22.5 Q24.5 21 28.5 22.5" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<path d="M31.5 22.5 Q35.5 21 39.5 22.5" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<circle cx="25" cy="27" r="3" fill="white"/>
+<circle cx="35" cy="27" r="3" fill="white"/>
+<circle cx="25.5" cy="27.5" r="2" fill="#1A2010"/>
+<circle cx="35.5" cy="27.5" r="2" fill="#1A2010"/>
+<path d="M23.5 34 Q27 36.5 30 34 Q33 36.5 36.5 34" stroke="#4A2010" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+<path d="M25.5 38.5 Q30 43 34.5 38.5" stroke="#8A4820" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<path d="M10 60 Q20 48 30 47 Q40 48 50 60Z" fill="#C08000"/>
+</svg>`;
+
+/* ================================================================
+   CONSTANTS
+   ================================================================ */
+const CS = 158; // cell size px — must match --cs
+
+const ROOMS = {
+  lobby:   { bg:'#EBF4FF', color:'#0057CC', name:'Lobby'       },
+  demo:    { bg:'#E8F5E9', color:'#107E3E', name:'Demo Room'   },
+  kitchen: { bg:'#FFF8E1', color:'#C87A00', name:'Kitchen'     },
+  server:  { bg:'#F0EEFF', color:'#6B46C1', name:'Server Room' }
+};
+const roomOf = (r,c) => r<2 ? (c<2 ? 'lobby':'demo') : (c<2 ? 'kitchen':'server');
+
+const BLOCKED = {
+  '0,0':{ icon:'🖥️', lbl:'Standing Desk' },
+  '2,2':{ icon:'🗄️', lbl:'Server Rack'   },
+  '3,1':{ icon:'🌿', lbl:'Potted Plant'  }
+};
+
+const PEOPLE = [
+  { id:'laptop',  name:'Laptop',  color:'#4A5568', victim:true  },
+  { id:'bastian', name:'Bastian', color:'#0070F2', victim:false },
+  { id:'sophie',  name:'Sophie',  color:'#107E3E', victim:false },
+  { id:'marco',   name:'Marco',   color:'#D4900A', victim:false }
+];
+
+const CLUES = [
+  { id:'c1', pid:'marco',   name:'Marco',
+    txt:'Ein Zeuge sah Marco in der Küche.',
+    tip:'Die Küche ist der untere linke Bereich des Gebäudes (Zeilen 3–4, Spalten 1–2). Darin befanden sich genau zwei Figuren.' },
+  { id:'c2', pid:'bastian', name:'Bastian',
+    txt:'Bastian stand direkt nördlich der Topfpflanze 🌿.',
+    tip:'Die Topfpflanze 🌿 steht in Zeile 4, Spalte 2. Direkt nördlich davon = ein Feld nach oben → Zeile 3, Spalte 2.' },
+  { id:'c3', pid:'laptop',  name:'Laptop',
+    txt:'Der Laptop wurde im Demo Room gefunden — in der obersten Zeile.',
+    tip:'Der Demo Room ist der obere rechte Bereich (Zeilen 1–2, Spalten 3–4). „Oberste Zeile" = Zeile 1.' },
+  { id:'c4', pid:'sophie',  name:'Sophie',
+    txt:'Sophie stand an der östlichsten (rechten) Außenwand des Gebäudes.',
+    tip:'Die östlichste Wand = Spalte 4, ganz rechts. Im Demo Room befand sich neben dem Laptop noch genau eine weitere Person.' }
+];
+
+// Solution: personId → [row, col]  (0-indexed)
+const SOL = {
+  laptop:  [0, 2],   // Row1 Col3 → Demo Room
+  sophie:  [1, 3],   // Row2 Col4 → Demo Room  ← MURDERER
+  bastian: [2, 1],   // Row3 Col2 → Kitchen
+  marco:   [3, 0]    // Row4 Col1 → Kitchen
+};
+const MURDERER_ID = 'sophie';
+
+/* ================================================================
+   STATE
+   ================================================================ */
+let G = freshState();
+
+function freshState() {
+  return {
+    grid:         Array(4).fill(null).map(() => Array(4).fill(null)),
+    used:         new Set(),
+    selectedClue: null,   // clue ID currently in mark mode (null = none)
+    marks:        {},      // { "r,c": Set<personId> } — manually placed marks
+    tick:        0,
+    wrong:       0,
+    name:        'Detective',
+    tid:         null,
+    running:     false,
+    done:        false,
+    selectedPid: null,  // click-to-select state
+    dragPid:     null,  // active drag person
+    prevScreen:  'start',
+    tutStep:     0
+  };
+}
+
+/* ================================================================
+   UTILITIES
+   ================================================================ */
+const $   = id => document.getElementById(id);
+const per = id => PEOPLE.find(x => x.id === id);
+const fmt = s  => `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+const esc = s  => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function posOf(pid) {
+  for (let r=0;r<4;r++) for (let c=0;c<4;c++)
+    if (G.grid[r][c] === pid) return [r,c];
+  return null;
+}
+function countPlaced() {
+  let n=0; for (let r=0;r<4;r++) for (let c=0;c<4;c++) if (G.grid[r][c]) n++;
+  return n;
+}
+function getConflicts() {
+  const bad = new Set();
+  // Rule: at most ONE person per row
+  for (let r=0;r<4;r++) {
+    const cols = [];
+    for (let c=0;c<4;c++) if (G.grid[r][c]) cols.push(c);
+    if (cols.length > 1) cols.forEach(c => bad.add(`${r},${c}`));
+  }
+  // Rule: at most ONE person per column
+  for (let c=0;c<4;c++) {
+    const rows = [];
+    for (let r=0;r<4;r++) if (G.grid[r][c]) rows.push(r);
+    if (rows.length > 1) rows.forEach(r => bad.add(`${r},${c}`));
+  }
+  return bad;
+}
+function calcScore() { return Math.max(50, 1000 - Math.floor(G.tick*2) - G.wrong*30); }
+
+// Convert hex color to rgba string
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+/* ================================================================
+   PENCIL MARKS — active clue system
+   ================================================================ */
+// Toggle mark mode for a clue card
+function selectClue(clueId) {
+  G.selectedClue = (G.selectedClue === clueId) ? null : clueId;
+  renderClues();
+  renderGrid();
+  updateMarkModeBar();
+}
+
+// Cancel mark mode (✕ button or Escape)
+function cancelMarkMode() {
+  G.selectedClue = null;
+  renderClues();
+  renderGrid();
+  updateMarkModeBar();
+}
+
+// Toggle a pencil mark for the selected clue's person in cell (r,c)
+function toggleMark(r, c) {
+  if (BLOCKED[`${r},${c}`] || G.grid[r][c]) return; // blocked or occupied
+  const clue = CLUES.find(cl => cl.id === G.selectedClue);
+  if (!clue) return;
+  const pid = clue.pid;
+  const key = `${r},${c}`;
+  if (!G.marks[key]) G.marks[key] = new Set();
+  if (G.marks[key].has(pid)) {
+    G.marks[key].delete(pid);
+    if (G.marks[key].size === 0) delete G.marks[key];
+  } else {
+    G.marks[key].add(pid);
+  }
+  renderGrid();
+}
+
+// Update the mark-mode bar visibility and text
+function updateMarkModeBar() {
+  const bar = $('markModeBar');
+  if (!bar) return;
+  if (G.selectedClue) {
+    const clue = CLUES.find(c => c.id === G.selectedClue);
+    const p    = per(clue.pid);
+    bar.style.display   = 'flex';
+    bar.style.borderColor = p.color;
+    bar.style.background  = hexToRgba(p.color, 0.07);
+    bar.style.color       = p.color;
+    $('markModeIcon').textContent = '✏️';
+    $('markModeTxt').innerHTML =
+      `Notiz-Modus: <strong>${p.name}</strong> — klicke leere Felder um `
+      + `<span style="background:${p.color};color:white;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:800">${p.name[0]}</span>`
+      + ` zu setzen / entfernen`;
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+// Does this clue's constraint match cell (r,c)?
+function clueMatchesCell(clue, r, c) {
+  switch (clue.pid) {
+    case 'marco':
+      // Marco → Kitchen cells: r>=2 AND c<=1
+      return r >= 2 && c <= 1;
+    case 'bastian':
+      // Bastian → directly north of potted plant (R4C2 → R3C2 = r:2, c:1)
+      return r === 2 && c === 1;
+    case 'laptop':
+      // Laptop → row 1 (r=0)
+      return r === 0;
+    case 'sophie':
+      // Sophie → col 4 (c=3)
+      return c === 3;
+    default:        return false;
+  }
+}
+
+// Returns array of personIds whose marks should appear in cell (r,c)
+// Reads from G.marks — set manually by the player
+function getMarksForCell(r, c) {
+  if (BLOCKED[`${r},${c}`]) return [];
+  const key = `${r},${c}`;
+  const m   = G.marks[key];
+  if (!m || m.size === 0) return [];
+  return [...m];
+}
+
+/* ================================================================
+   TUTORIAL
+   ================================================================ */
+const TUTS = [
+  /* ---- Step 1: Das Konzept ---- */
+  {
+    icon: '🗺️',
+    title: 'Das Konzept',
+    text: '3 Verdächtige und der Laptop (Tatopfer) werden auf dem Grid platziert — je 1 pro Zeile und Spalte. Die restlichen 12 Felder bleiben leer.',
+    vis: () => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="display:grid;grid-template-columns:repeat(4,32px);grid-template-rows:repeat(4,32px);gap:2px">
+          ${[
+            [null,null,'laptop',null],
+            [null,null,null,'sophie'],
+            [null,'bastian',null,null],
+            ['marco',null,null,null]
+          ].flat().map(pid => {
+            if(pid){
+              const col={laptop:'#4A5568',bastian:'#0070F2',sophie:'#107E3E',marco:'#D4900A'}[pid];
+              const lbl={laptop:'💻',bastian:'B',sophie:'S',marco:'M'}[pid];
+              return '<div style="width:32px;height:32px;border-radius:5px;background:'+col+';display:flex;align-items:center;justify-content:center;color:white;font-size:'+(pid==='laptop'?'15':'12')+'px;font-weight:800">'+lbl+'</div>';
+            }
+            return '<div style="width:32px;height:32px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>';
+          }).join('')}
+        </div>
+        <div style="font-size:11px;color:#6A7580;text-align:center;line-height:1.6">
+          <span style="display:inline-flex;align-items:center;gap:4px">
+            <span style="background:#0070F2;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">B</span>
+            <span style="background:#107E3E;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">S</span>
+            <span style="background:#D4900A;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">M</span>
+            = 3 Verdächtige
+          </span><br>
+          <span style="display:inline-flex;align-items:center;gap:4px">
+            <span style="background:#4A5568;color:white;border-radius:4px;padding:1px 6px;font-size:10px">💻</span>
+            = Laptop (Tatopfer, keine Person)
+          </span><br>
+          <strong style="color:var(--txt)">12 Felder bleiben leer — das ist normal!</strong>
+        </div>
+      </div>`
+  },
+  /* ---- Step 2: Die Regel ---- */
+  {
+    icon: '📐',
+    title: 'Regel: 1 Figur pro Zeile & Spalte',
+    text: 'Jede Zeile und jede Spalte darf nur eine Figur haben (Verdächtiger oder Laptop). Zwei Figuren in Zeile/Spalte → roter Rahmen = Fehler.',
+    vis: () => `
+      <div style="display:flex;gap:18px;justify-content:center;align-items:flex-start">
+        <div style="text-align:center">
+          <div style="font-size:10px;font-weight:700;color:#BB0000;margin-bottom:5px">✗ Falsch</div>
+          <div style="display:grid;grid-template-columns:repeat(2,36px);gap:2px">
+            <div style="width:36px;height:36px;border:2.5px solid #BB0000;border-radius:5px;background:#FFE8E8;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#0070F2;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">B</div></div>
+            <div style="width:36px;height:36px;border:2.5px solid #BB0000;border-radius:5px;background:#FFE8E8;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
+            <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
+            <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
+          </div>
+          <div style="font-size:10px;color:#BB0000;margin-top:4px">B+S in Zeile 1 🚫</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:10px;font-weight:700;color:#107E3E;margin-bottom:5px">✓ Richtig</div>
+          <div style="display:grid;grid-template-columns:repeat(2,36px);gap:2px">
+            <div style="width:36px;height:36px;border:1.5px solid rgba(0,0,0,.1);border-radius:5px;background:#EBF4FF;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#0070F2;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">B</div></div>
+            <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
+            <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
+            <div style="width:36px;height:36px;border:1.5px solid rgba(0,0,0,.1);border-radius:5px;background:#E8F5E9;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
+          </div>
+          <div style="font-size:10px;color:#107E3E;margin-top:4px">Jede Zeile: 1 Person ✓</div>
+        </div>
+      </div>`
+  },
+  /* ---- Step 3: Die Räume & Täter ---- */
+  {
+    icon: '🏠',
+    title: 'Wer war allein mit dem Laptop?',
+    text: 'Das Gebäude hat 4 Räume (je 2×2 Felder). Der Laptop liegt im Demo Room. Finde die Person, die auch im Demo Room war — das ist der Täter.',
+    vis: () => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="display:grid;grid-template-columns:repeat(2,88px);gap:3px">
+          <div style="height:62px;background:#EBF4FF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#0057CC">Lobby</div>
+          <div style="height:62px;background:#E8F5E9;border-radius:6px;border:2.5px solid #107E3E;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+            <div style="font-size:10px;font-weight:700;color:#107E3E">Demo Room</div>
+            <div style="display:flex;gap:5px">
+              <div style="width:24px;height:24px;border-radius:50%;background:#4A5568;display:flex;align-items:center;justify-content:center;font-size:13px" title="Laptop">💻</div>
+              <div style="width:24px;height:24px;border-radius:50%;background:#107E3E;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700">?</div>
+            </div>
+          </div>
+          <div style="height:62px;background:#FFF8E1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#C87A00">Kitchen</div>
+          <div style="height:62px;background:#F0EEFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#6B46C1">Server Room</div>
+        </div>
+        <div style="font-size:11px;color:#107E3E;font-weight:600;text-align:center">Wer ist das "?" → Das ist der Täter!</div>
+      </div>`
+  },
+  /* ---- Step 4: Hinweise & Notizen ---- */
+  {
+    icon: '📋',
+    title: 'Hinweise nutzen & Notizen setzen',
+    text: 'Klicke eine Hinweiskarte → Notiz-Modus aktiv. Dann selbst auf Felder klicken um den Anfangsbuchstaben zu setzen. Nochmal klicken entfernt ihn.',
+    vis: () => `
+      <div style="display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap">
+        <div style="background:#fff;border:2px solid #D4900A;border-radius:8px;padding:8px 10px;font-size:11px;text-align:center;min-width:96px">
+          <div style="font-weight:700;color:#D4900A">🟡 Marco</div>
+          <div style="color:#6A7580;font-size:10px">in der Küche</div>
+          <div style="font-size:9px;background:#D4900A;color:white;border-radius:4px;padding:1px 6px;margin-top:4px;display:inline-block">AKTIV</div>
+        </div>
+        <div style="font-size:16px;color:#6A7580">→</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="display:grid;grid-template-columns:repeat(2,32px);gap:2px">
+            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:20px;height:20px;border-radius:50%;background:#D4900A;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">M</div></div>
+            <div style="width:32px;height:32px;background:#FFF8E1;border:2px dashed rgba(0,112,242,.5);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(0,112,242,.35)">+</div>
+            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:20px;height:20px;border-radius:50%;background:#D4900A;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">M</div></div>
+            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px">🌿</div>
+          </div>
+          <div style="font-size:10px;color:#6A7580">← du klickst selbst!</div>
+        </div>
+      </div>`
+  },
+  /* ---- Step 5: Platzieren & Anklage ---- */
+  {
+    icon: '✋',
+    title: 'Platzieren & Anklage',
+    text: 'Ziehe eine Person aus der Bank auf ein Feld — oder klicke Person an, dann Feld. Alle 4 platziert, kein roter Rahmen → Anklage klicken!',
+    vis: () => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+            <div style="width:44px;height:44px;border-radius:50%;background:#0070F2;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:15px;box-shadow:0 2px 8px rgba(0,112,242,.3)">B</div>
+            <div style="font-size:10px;font-weight:700;color:#0070F2">Bastian</div>
+          </div>
+          <span style="font-size:20px">✋→</span>
+          <div style="width:52px;height:52px;border:2.5px dashed #0070F2;border-radius:8px;background:rgba(0,112,242,.06);display:flex;align-items:center;justify-content:center;font-size:22px;color:rgba(0,112,242,.3)">+</div>
+        </div>
+        <div style="background:#0070F2;color:white;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700">⚖️ Anklage →</div>
+      </div>`
+  }
+];
+
+function showTutorial() {
+  G.tutStep = 0;
+  renderTutorial();
+  $('tut-overlay').classList.remove('hidden');
+}
+
+function renderTutorial() {
+  const step = TUTS[G.tutStep];
+  $('tut-icon').textContent   = step.icon;
+  $('tut-title').textContent  = step.title;
+  $('tut-text').textContent   = step.text;
+  $('tut-vis').innerHTML      = step.vis();
+
+  // dots
+  const dots = $('tut-dots');
+  dots.innerHTML = '';
+  TUTS.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'tut-dot' + (i === G.tutStep ? ' on' : '');
+    dots.appendChild(d);
+  });
+
+  // back button
+  const back = $('tut-back');
+  back.style.visibility = G.tutStep === 0 ? 'hidden' : 'visible';
+
+  // next button
+  const next = $('tut-next');
+  next.textContent = G.tutStep === TUTS.length - 1 ? 'Los geht\'s! →' : 'Weiter →';
+}
+
+function tutNext() {
+  if (G.tutStep < TUTS.length - 1) {
+    G.tutStep++;
+    renderTutorial();
+  } else {
+    closeTutorial();
+  }
+}
+
+function tutPrev() {
+  if (G.tutStep > 0) {
+    G.tutStep--;
+    renderTutorial();
+  }
+}
+
+function closeTutorial() {
+  $('tut-overlay').classList.add('hidden');
+  startTimer(); // timer begins as soon as tutorial is dismissed
+}
+
+/* ================================================================
+   SCREENS
+   ================================================================ */
+const SCREENS = ['sc-start','sc-game','sc-end','sc-lb'];
+function show(id) { SCREENS.forEach(s=>$(s).classList.remove('active')); $(id).classList.add('active'); }
+
+/* ================================================================
+   START
+   ================================================================ */
+function startGame() {
+  G = freshState();
+  G.name = $('usr').value.trim() || 'Detective';
+  renderClues();
+  renderBench();
+  renderGrid();
+  updateAccuse();
+  $('timerEl').textContent = '0:00';
+  $('clueEl').textContent  = '0';
+  $('tab-puzzle').classList.add('on');
+  $('tab-lb').classList.remove('on');
+  show('sc-game');
+  showTutorial();
+}
+
+/* ================================================================
+   TIMER
+   ================================================================ */
+function startTimer() {
+  if (G.running) return;
+  G.running = true;
+  G.tid = setInterval(() => { G.tick++; $('timerEl').textContent = fmt(G.tick); }, 1000);
+}
+function stopTimer() { clearInterval(G.tid); G.tid=null; G.running=false; }
+
+/* ================================================================
+   CLUES
+   ================================================================ */
+function renderClues() {
+  const list = $('clueList'); list.innerHTML='';
+  CLUES.forEach(clue => {
+    const p      = per(clue.pid);
+    const done   = posOf(clue.pid) !== null;       // person is placed
+    const active = G.selectedClue === clue.id && !done;
+    const card   = document.createElement('div');
+    let cls = 'cc';
+    if (done)   cls += ' cc-done';
+    else if (active) cls += ' cc-active';
+    card.className = cls;
+
+    // Active state: person-color border + subtle bg tint
+    if (active) {
+      card.style.borderColor = p.color;
+      card.style.background  = hexToRgba(p.color, 0.05);
+    }
+
+    // Tag: HINWEIS / AKTIV (colored) / ✓ (done)
+    let tagHtml, doneHtml;
+    if (done) {
+      tagHtml  = `<span class="cc-tag" style="display:none">HINWEIS</span>`;
+      doneHtml = `<span class="cc-done-lbl">✓</span>`;
+    } else if (active) {
+      tagHtml  = `<span class="cc-tag" style="background:${hexToRgba(p.color,0.12)};color:${p.color}">AKTIV</span>`;
+      doneHtml = `<span class="cc-done-lbl" style="display:none"></span>`;
+    } else {
+      tagHtml  = `<span class="cc-tag">HINWEIS</span>`;
+      doneHtml = `<span class="cc-done-lbl" style="display:none"></span>`;
+    }
+
+    card.innerHTML = `
+      <div class="cc-hdr">
+        <div class="cc-av">${AV[clue.pid]}</div>
+        <div class="cc-name">${clue.name}</div>
+        ${tagHtml}
+        ${doneHtml}
+      </div>
+      <div class="cc-txt">${clue.txt}</div>
+      ${clue.tip ? `
+        <button class="cc-tip-btn" onclick="event.stopPropagation();toggleTip(this)">💡 Tipp anzeigen</button>
+        <div class="cc-tip-txt">${clue.tip}</div>` : ''}`;
+
+    if (!done) {
+      card.onclick = () => selectClue(clue.id);
+    }
+    list.appendChild(card);
+  });
+  // Count total manually placed mark dots
+  let totalMarks = 0;
+
+  Object.values(G.marks).forEach(s => totalMarks += s.size);
+  $('clueEl').textContent = totalMarks;
+}
+
+// Returns row/col blocking person for cell (r,c) — for X-mark display
+function getXMarks(r, c) {
+  let row = null, col = null;
+  for (let cc=0;cc<4;cc++) if (cc!==c && G.grid[r][cc]) { row=G.grid[r][cc]; break; }
+  for (let rr=0;rr<4;rr++) if (rr!==r && G.grid[rr][c]) { col=G.grid[rr][c]; break; }
+  return { row, col };
+}
+
+function toggleTip(btn) {
+  const tipDiv = btn.nextElementSibling;
+  const open = tipDiv.classList.toggle('open');
+  btn.textContent = open ? '🔼 Tipp verbergen' : '💡 Tipp anzeigen';
+}
+
+/* ================================================================
+   SUSPECTS BENCH  — shows all 4 as draggable tiles
+   ================================================================ */
+function renderBench() {
+  const row = $('benchRow'); row.innerHTML='';
+  const hint = $('benchHint');
+
+  const allPlaced = PEOPLE.every(p => posOf(p.id) !== null);
+  hint.textContent = G.selectedPid
+    ? `Click a cell to place ${per(G.selectedPid).name}`
+    : allPlaced ? 'All placed — review conflicts, then Accuse'
+    : 'Drag onto grid, or click to select';
+
+  PEOPLE.forEach(p => {
+    const curPos  = posOf(p.id);
+    const placed  = curPos !== null;
+    const sel     = G.selectedPid === p.id;
+
+    const tile = document.createElement('div');
+    tile.className = 'bench-tile'
+      + (placed ? ' placed' : '')
+      + (sel    ? ' selected' : '');
+    tile.draggable  = true;
+    tile.dataset.pid = p.id;
+
+    const locTag = placed
+      ? `<span class="bench-loc">R${curPos[0]+1}C${curPos[1]+1}</span>`
+      : `<span class="bench-select-hint">${sel ? '✓ selected' : 'drag / click'}</span>`;
+
+    tile.innerHTML = `
+      <div class="bench-av-wrap">${AV[p.id]}</div>
+      <div class="bench-name">${p.name}${p.victim ? '<br><small style="color:var(--err);font-weight:700">VICTIM</small>' : ''}</div>
+      ${locTag}`;
+
+    // --- DRAG from bench ---
+    tile.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', p.id);
+      G.dragPid = p.id;
+      G.selectedPid = null;
+      setTimeout(() => tile.classList.add('dragging'), 0);
+      startTimer();
+    });
+    tile.addEventListener('dragend', () => {
+      tile.classList.remove('dragging');
+      G.dragPid = null;
+      renderBench();
+    });
+
+    // --- CLICK to select ---
+    tile.addEventListener('click', e => {
+      if (tile.classList.contains('dragging')) return;
+      G.selectedPid = (G.selectedPid === p.id) ? null : p.id;
+      renderBench();
+    });
+
+    row.appendChild(tile);
+  });
+
+  // bench area is also a DROP TARGET (to remove from grid)
+  const area = $('benchArea');
+  area.ondragover = e => { if (G.dragPid && posOf(G.dragPid)) e.preventDefault(); };
+  area.ondrop = e => {
+    e.preventDefault();
+    const pid = e.dataTransfer.getData('text/plain') || G.dragPid;
+    if (!pid) return;
+    const old = posOf(pid);
+    if (old) {
+      G.grid[old[0]][old[1]] = null;
+      G.dragPid = null;
+      renderGrid(); renderBench(); updateAccuse();
+    }
+  };
+}
+
+/* ================================================================
+   GRID
+   ================================================================ */
+function renderGrid(animAt) {
+  const el = $('gameGrid'); el.innerHTML='';
+  const bad = getConflicts();
+
+  for (let r=0;r<4;r++) for (let c=0;c<4;c++) {
+    const key  = `${r},${c}`;
+    const blk  = BLOCKED[key];
+    const pid  = G.grid[r][c];
+    const conf = bad.has(key);
+    const rm   = ROOMS[roomOf(r,c)];
+
+    const cell = document.createElement('div');
+    cell.className = 'gc' + (blk?' gc-blk':'') + (conf?' gc-conflict':'');
+    cell.style.background = blk ? 'rgba(0,0,0,.04)' : rm.bg;
+
+    // single-sided borders to avoid doubling
+    cell.style.borderTop    = r===0 ? '3px solid #2C3040' : 'none';
+    cell.style.borderLeft   = c===0 ? '3px solid #2C3040' : 'none';
+    cell.style.borderBottom = r===3 ? '3px solid #2C3040' : r===1 ? '3px solid #505869' : '1px solid rgba(0,0,0,.1)';
+    cell.style.borderRight  = c===3 ? '3px solid #2C3040' : c===1 ? '3px solid #505869' : '1px solid rgba(0,0,0,.1)';
+
+    if (blk) {
+      cell.innerHTML = `<div class="gc-blk-icon">${blk.icon}</div><div class="gc-blk-lbl">${blk.lbl}</div>`;
+    } else if (pid) {
+      const p   = per(pid);
+      const anim = (animAt && animAt[0]===r && animAt[1]===c) ? ' pop' : '';
+      cell.innerHTML = `
+        <div class="gc-person${anim}" draggable="true">
+          <div class="gc-av-wrap${p.victim?' victim':''}">` + AV[pid] + `</div>
+          <div class="gc-nm">${p.name}</div>
+          ${p.victim ? '<div class="gc-badge">Victim</div>' : ''}
+        </div>`;
+
+      // drag from grid to move
+      const personDiv = cell.querySelector('.gc-person');
+      personDiv.addEventListener('dragstart', e => {
+        e.stopPropagation();
+        e.dataTransfer.setData('text/plain', pid);
+        G.dragPid = pid;
+        startTimer();
+        setTimeout(() => { personDiv.style.opacity='.3'; }, 0);
+      });
+      personDiv.addEventListener('dragend', () => {
+        personDiv.style.opacity = '';
+        G.dragPid = null;
+        renderGrid(); renderBench();
+      });
+
+      // click occupied → picker (unless in mark mode)
+      cell.addEventListener('click', e => {
+        if (G.selectedClue) return;  // mark mode: occupied cells do nothing
+        if (G.selectedPid) {
+          e.stopPropagation();
+          placePerson(r, c, G.selectedPid);
+          G.selectedPid = null;
+        } else {
+          openPicker(r, c);
+        }
+      });
+    } else {
+      // Build pencil marks for active clues
+      const marks = getMarksForCell(r, c);
+      // Order: laptop top-left, bastian top-right, sophie bottom-left, marco bottom-right
+      const ORDER = ['laptop','bastian','sophie','marco'];
+      let marksHtml = '';
+      if (marks.length > 0) {
+        const slots = ORDER.map(pid => {
+          if (marks.includes(pid)) {
+            const pp = per(pid);
+            const letter = pp.name[0];
+            return `<div class="mark-dot" style="background:${pp.color}">${letter}</div>`;
+          } else {
+            return `<div style="width:26px;height:26px"></div>`;
+          }
+        }).join('');
+        marksHtml = `<div class="cell-marks">${slots}</div>`;
+      }
+      // Row/column X-marks (elimination badges)
+      const xm = getXMarks(r, c);
+      let xHtml = '';
+      if (xm.row) { const px=per(xm.row); xHtml+=`<div class="gc-x-row" style="background:${px.color}" title="Zeile belegt von ${px.name}">✕</div>`; }
+      if (xm.col) { const px=per(xm.col); xHtml+=`<div class="gc-x-col" style="background:${px.color}" title="Spalte belegt von ${px.name}">✕</div>`; }
+
+      cell.innerHTML = `<div class="gc-hint">+</div>${marksHtml}${xHtml}`;
+      // In mark mode: show cell cursor
+      if (G.selectedClue) cell.classList.add('mark-mode-cell');
+      cell.addEventListener('click', () => {
+        if (G.selectedClue) {
+          toggleMark(r, c);           // place / remove pencil mark
+        } else if (G.selectedPid) {
+          placePerson(r, c, G.selectedPid);
+          G.selectedPid = null;
+        } else {
+          openPicker(r, c);
+        }
+      });
+    }
+
+    // --- DROP TARGET ---
+    if (!blk) {
+      cell.addEventListener('dragover', e => {
+        e.preventDefault();
+        cell.classList.add('drag-over');
+      });
+      cell.addEventListener('dragleave', () => cell.classList.remove('drag-over'));
+      cell.addEventListener('drop', e => {
+        e.preventDefault();
+        cell.classList.remove('drag-over');
+        const pid2 = e.dataTransfer.getData('text/plain') || G.dragPid;
+        if (pid2) {
+          G.dragPid = null;
+          placePerson(r, c, pid2);
+        }
+      });
+    }
+
+    el.appendChild(cell);
+  }
+}
+
+/* ================================================================
+   PLACE PERSON
+   ================================================================ */
+function placePerson(r, c, pid) {
+  startTimer();
+  if (BLOCKED[`${r},${c}`]) return;
+  if (pid) {
+    const old = posOf(pid);
+    if (old) G.grid[old[0]][old[1]] = null;
+  }
+  G.grid[r][c] = pid;
+  // Clear pencil marks for placed person + exit mark mode if it was their clue
+  if (pid) {
+    for (const key of Object.keys(G.marks)) {
+      G.marks[key].delete(pid);
+      if (G.marks[key].size === 0) delete G.marks[key];
+    }
+    const clue = CLUES.find(cl => cl.pid === pid);
+    if (clue && G.selectedClue === clue.id) G.selectedClue = null;
+  }
+  updateMarkModeBar();
+  closePicker();
+  renderGrid([r, c]);
+  renderBench();
+  renderClues();
+  updateAccuse();
+}
+
+/* ================================================================
+   PICKER  (click-on-cell fallback menu)
+   ================================================================ */
+function openPicker(r, c) {
+  if (BLOCKED[`${r},${c}`]) return;
+  startTimer();
+  G.selectedPid = null;
+  renderBench();
+
+  const pk = $('picker'); pk.innerHTML='';
+  const ttl = document.createElement('div');
+  ttl.className = 'pk-ttl';
+  ttl.textContent = `Row ${r+1}, Col ${c+1}  —  ${ROOMS[roomOf(r,c)].name}`;
+  pk.appendChild(ttl);
+
+  PEOPLE.forEach(p => {
+    const here   = G.grid[r][c] === p.id;
+    const curPos = posOf(p.id);
+    const moved  = curPos && !here;
+    const btn = document.createElement('button');
+    btn.className = 'pk-item';
+    const locTag = here
+      ? `<span style="margin-left:auto;color:var(--ok);font-size:11px">✓ here</span>`
+      : moved
+        ? `<span style="margin-left:auto;color:var(--muted);font-size:10px">R${curPos[0]+1}C${curPos[1]+1}</span>`
+        : '';
+    btn.innerHTML = `
+      <div class="pk-sm-av">${AV[p.id]}</div>
+      <span>${p.name}</span>
+      ${p.victim ? '<small style="color:var(--muted);font-size:10px">&nbsp;(victim)</small>' : ''}
+      ${locTag}`;
+    btn.onclick = e => { e.stopPropagation(); placePerson(r, c, here ? null : p.id); };
+    pk.appendChild(btn);
+  });
+
+  if (G.grid[r][c]) {
+    const sep = document.createElement('div'); sep.className='pk-sep'; pk.appendChild(sep);
+    const clr = document.createElement('button'); clr.className='pk-clear'; clr.textContent='✕ Clear cell';
+    clr.onclick = e => { e.stopPropagation(); placePerson(r, c, null); };
+    pk.appendChild(clr);
+  }
+
+  pk.classList.add('open');
+  const gr = $('gameGrid').getBoundingClientRect();
+  const cx = gr.left + c*CS, cy = gr.top + r*CS;
+  const pw = pk.offsetWidth||170, ph = pk.offsetHeight||240;
+  let left = cx+CS+8, top = cy;
+  if (left+pw > window.innerWidth-8)  left = cx-pw-8;
+  if (top+ph  > window.innerHeight-8) top  = window.innerHeight-ph-8;
+  if (top < 58) top = 58;
+  pk.style.left=left+'px'; pk.style.top=top+'px';
+}
+
+function closePicker() {
+  $('picker').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if ($('picker').classList.contains('open') && !$('picker').contains(e.target)) closePicker();
+});
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') {
+    closePicker();
+    G.selectedPid  = null;
+    G.selectedClue = null;
+    renderBench();
+    renderClues();
+    renderGrid();
+    updateMarkModeBar();
+  }
+});
+
+/* ================================================================
+   ACCUSE / SUBMIT
+   ================================================================ */
+function updateAccuse() {
+  const n=countPlaced(), tot=PEOPLE.length, bad=getConflicts();
+  const btn=$('accuseBtn'), hint=$('accuseHint');
+  if (n<tot) {
+    btn.disabled=true;
+    hint.textContent=`${n} von ${tot} platziert — noch ${tot-n} fehlen`;
+  } else if (bad.size>0) {
+    btn.disabled=true;
+    hint.textContent='⚠️ Konflikt: zwei Figuren in derselben Zeile oder Spalte (roter Rand)';
+  } else {
+    btn.disabled=false;
+    hint.textContent='Alle platziert — bereit zur Anklage!';
+  }
+}
+
+function submitSolution() {
+  let failMsg = null;
+
+  // Check each clue constraint (Marco→Kitchen, Bastian→Col2, Laptop→Row1, Sophie→Col4)
+  for (const clue of CLUES) {
+    const cp = posOf(clue.pid);
+    if (!cp) { failMsg = 'Nicht alle Figuren platziert!'; break; }
+    if (!clueMatchesCell(clue, cp[0], cp[1])) {
+      failMsg = `Tipp nicht erfüllt: ${per(clue.pid).name} steht am falschen Ort!`;
+      break;
+    }
+  }
+
+  // Core check: Sophie must be in the Demo Room (with the Laptop)
+  if (!failMsg) {
+    const sp = posOf('sophie');
+    if (!sp || roomOf(sp[0], sp[1]) !== 'demo') {
+      failMsg = 'Wer war noch im Demo Room beim Laptop? Sophie ist nicht dort…';
+    }
+  }
+
+  if (!failMsg) {
+    stopTimer(); G.done=true; saveScore(); showEndScreen();
+  } else {
+    G.wrong++; G.tick+=5; $('timerEl').textContent=fmt(G.tick);
+    const ge=$('gameGrid');
+    ge.classList.remove('shaking'); void ge.offsetWidth;
+    ge.classList.add('shaking');
+    setTimeout(()=>ge.classList.remove('shaking'),440);
+    showToast('❌ ' + failMsg);
+  }
+}
+
+// Reveal correct solution (for players who are stuck)
+function revealSolution() {
+  G.grid = Array(4).fill(null).map(() => Array(4).fill(null));
+  Object.entries(SOL).forEach(([pid,[r,c]]) => { G.grid[r][c] = pid; });
+  G.selectedClue = null;
+  Object.keys(G.marks).forEach(k => delete G.marks[k]);
+  renderGrid(); renderBench(); renderClues(); updateAccuse(); updateMarkModeBar();
+  showToast('💡 Lösung eingeblendet — klicke jetzt Anklage!');
+}
+
+function showToast(msg) {
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2300);
+}
+
+/* ================================================================
+   END SCREEN
+   ================================================================ */
+function showEndScreen() {
+  const s = calcScore();
+  $('endIcon').textContent  = '🎉';
+  $('endTitle').textContent = 'Case Solved!';
+  $('endSub').textContent   = `Well done, Detective ${G.name}!`;
+  $('endScore').textContent = s;
+  $('endStats').innerHTML = `
+    <div class="el-stat"><span>⏱</span><span class="el-stat-lbl">Zeit</span><span class="el-stat-val">${fmt(G.tick)}</span></div>
+    <div class="el-stat"><span>✏️</span><span class="el-stat-lbl">Notizen gesetzt</span><span class="el-stat-val">${Object.values(G.marks).reduce((s,m)=>s+m.size,0)}</span></div>
+    <div class="el-stat"><span>❌</span><span class="el-stat-lbl">Falsche Versuche</span><span class="el-stat-val">${G.wrong}</span></div>`;
+
+  const murderer = per(MURDERER_ID);
+  $('revAv').innerHTML = AV[MURDERER_ID];
+  $('revName').textContent = murderer.name;
+  $('revTxt').textContent  =
+    `${murderer.name} was alone with the Laptop in the Demo Room. ` +
+    `She had the opportunity — and she used it. The diagnostic logs confirmed: ` +
+    `the laptop's power was cut exactly 3 minutes before the Showroom tour began.`;
+  $('revFlavor').textContent =
+    `"I was just checking the cable connections," ${murderer.name} insisted. ` +
+    `But every access log entry pointed to her. ` +
+    `The saboteur of the Discovery Showroom: ${murderer.name}. Case closed.`;
+
+  G.prevScreen='end'; show('sc-end');
+}
+
+/* ================================================================
+   LEADERBOARD
+   ================================================================ */
+const LB_KEY = 'murdoku_lb_v2';
+
+function saveScore() {
+  try {
+    const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+    lb.push({ name:G.name, time:G.tick, score:calcScore(), date:new Date().toLocaleDateString() });
+    lb.sort((a,b)=>b.score-a.score); lb.splice(30);
+    localStorage.setItem(LB_KEY,JSON.stringify(lb));
+  } catch(e){}
+}
+
+function renderLB() {
+  const tbl=$('lbTable'); let lb=[];
+  try { lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]'); } catch(e){}
+  const myScore = G.done ? calcScore() : -1;
+  const medal = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+  if (!lb.length) { tbl.innerHTML='<div class="lb-empty">No scores yet — be the first detective!</div>'; return; }
+  tbl.innerHTML =
+    `<div class="lb-row lb-hdr"><div>#</div><div>Detective</div><div>Time</div><div>Score</div></div>` +
+    lb.map((e,i) => `
+      <div class="lb-row${e.name===G.name&&e.score===myScore?' lb-me':''}">
+        <div class="lb-rank">${medal(i)}</div>
+        <div class="lb-name">${esc(e.name)}</div>
+        <div class="lb-time">${fmt(e.time)}</div>
+        <div class="lb-score">${e.score}</div>
+      </div>`).join('');
+}
+
+function goLB(from) { G.prevScreen=from; renderLB(); show('sc-lb'); }
+function lbBack() {
+  if (G.prevScreen==='end') show('sc-end');
+  else if (G.prevScreen==='game') { $('tab-puzzle').classList.add('on'); $('tab-lb').classList.remove('on'); show('sc-game'); }
+  else show('sc-start');
+}
+function switchTab(tab) {
+  if (tab==='puzzle') { $('tab-puzzle').classList.add('on'); $('tab-lb').classList.remove('on'); show('sc-game'); }
+  else { $('tab-puzzle').classList.remove('on'); $('tab-lb').classList.add('on'); G.prevScreen='game'; renderLB(); show('sc-lb'); }
+}
+
+/* ================================================================
+   HELP MODAL
+   ================================================================ */
+function openHelp()  { $('helpModal').classList.add('open'); }
+function closeHelp() { $('helpModal').classList.remove('open'); }
+$('helpModal').addEventListener('click', e => { if (e.target === $('helpModal')) closeHelp(); });
+
+/* ================================================================
+   RESET
+   ================================================================ */
+function resetGame() { stopTimer(); $('usr').value=G.name; show('sc-start'); }
+
+/* ================================================================
+   INIT
+   ================================================================ */
+$('usr').addEventListener('keydown', e => { if (e.key==='Enter') startGame(); });
+</script>
+</body>
+</html>
