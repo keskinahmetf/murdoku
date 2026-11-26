@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAP Murdoku — Case: Showroom Disaster</title>
-<meta name="description" content="Discover SAP Murdoku — a logic puzzle mystery. Use the clues to find who sabotaged the demo laptop in the Discovery Showroom.">
+<title>Solve the Mystery — Case: Showroom Disaster</title>
+<meta name="description" content="Discover SAP: Solve the Mystery — a logic puzzle game. Use the clues to find who sabotaged the demo laptop in the Discovery Showroom.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
 <style>
 /* ============================================================  RESET */
@@ -307,7 +307,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 .mark-mode-bar .mmb-cancel { background:none; border:none; cursor:pointer; font-size:18px; color:var(--muted); margin-left:auto; padding:2px 6px; border-radius:5px; transition:.12s; }
 .mark-mode-bar .mmb-cancel:hover { background:rgba(0,0,0,.07); color:var(--txt); }
 
-/* Row/Column X-marks (classic Murdoku elimination) */
+/* Row/Column X-marks (classic Solve the Mystery elimination) */
 .gc-x-row, .gc-x-col {
   position:absolute; bottom:7px;
   width:22px; height:22px; border-radius:50%;
@@ -324,6 +324,41 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 .cc-tip-txt { display:none; font-size:12px; color:var(--txt); line-height:1.65; margin-top:7px; background:#EBF4FF; border-radius:7px; padding:9px 11px; border-left:3px solid var(--blue); }
 .cc-tip-txt.open { display:block; }
 .cc-done .cc-tip-btn, .cc-done .cc-tip-txt { display:none; }
+/* ============================================================ NAME SCREEN */
+#sc-name { background:var(--blue); }
+.ns-wrap { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:clamp(16px,3vh,40px) clamp(20px,4vw,60px); gap:clamp(12px,2.2vh,28px); }
+.ns-title { font-size:clamp(26px,4vw,54px); font-weight:800; color:#fff; text-align:center; }
+.ns-sub { font-size:clamp(13px,1.4vw,18px); color:rgba(255,255,255,.75); text-align:center; max-width:600px; }
+.ns-display { background:rgba(255,255,255,.12); border:2.5px solid rgba(255,255,255,.35); border-radius:14px; padding:clamp(10px,1.8vh,22px) clamp(24px,3vw,48px); font-size:clamp(28px,4.5vw,58px); font-weight:800; color:#fff; letter-spacing:5px; text-transform:uppercase; min-width:clamp(280px,55vw,760px); min-height:clamp(60px,8vh,96px); text-align:center; display:flex; align-items:center; justify-content:center; }
+.ns-cursor { animation:blink 1s step-end infinite; margin-left:2px; }
+@keyframes blink { 50%{opacity:0} }
+.ns-error { font-size:clamp(12px,1.3vw,16px); color:#FFB3B3; min-height:22px; text-align:center; font-weight:600; }
+
+/* Keyboard */
+.ns-keyboard { display:flex; flex-direction:column; gap:min(1vh,8px); }
+.kb-row { display:flex; justify-content:center; gap:min(0.55vw,7px); }
+.kb-key { width:clamp(34px,7.2vw,106px); height:clamp(42px,6.5vh,80px); background:rgba(255,255,255,.16); border:1.5px solid rgba(255,255,255,.22); border-radius:clamp(6px,0.5vw,10px); color:#fff; font:700 clamp(14px,1.9vw,24px)/1 inherit; cursor:pointer; transition:all .1s; display:flex; align-items:center; justify-content:center; }
+.kb-key:hover { background:rgba(255,255,255,.3); }
+.kb-key:active { transform:scale(.93); background:rgba(255,255,255,.45); }
+.kb-back { width:clamp(54px,10.5vw,154px); background:rgba(255,100,80,.3); }
+.kb-space { width:clamp(140px,26vw,380px); font-size:clamp(11px,1.2vw,15px); letter-spacing:2px; }
+.kb-go { flex:1; min-width:clamp(160px,22vw,340px); background:#fff; color:var(--blue); font-weight:800; }
+.kb-go:hover { background:#EBF4FF; }
+
+/* PW Modal */
+.pw-overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:9999; display:flex; align-items:center; justify-content:center; }
+.pw-box { background:#fff; border-radius:14px; padding:32px 36px; min-width:340px; box-shadow:0 20px 60px rgba(0,0,0,.3); display:flex; flex-direction:column; gap:12px; }
+.pw-title { font-size:18px; font-weight:800; color:var(--txt); }
+.pw-sub { font-size:13px; color:var(--muted); }
+.pw-input { border:1.5px solid var(--border); border-radius:8px; padding:11px 14px; font:14px/1 inherit; outline:none; width:100%; }
+.pw-input:focus { border-color:var(--blue); }
+.pw-err { font-size:12px; color:var(--err); min-height:16px; }
+.pw-btns { display:flex; gap:10px; justify-content:flex-end; }
+.pw-btn { background:#fff; border:1.5px solid var(--border); border-radius:8px; padding:9px 20px; font:600 13px/1 inherit; cursor:pointer; transition:.15s; }
+.pw-btn:hover { background:var(--bg); }
+.pw-btn-ok { background:var(--err); color:#fff; border-color:var(--err); }
+.pw-btn-ok:hover { background:#990000; }
+
 </style>
 </head>
 <body>
@@ -334,7 +369,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
     <div class="sl">
       <div style="display:flex;align-items:center;gap:9px;margin-bottom:20px">
         <div style="background:rgba(255,255,255,.18);color:#fff;font-weight:800;font-size:13px;padding:3px 8px;border-radius:3px;letter-spacing:.6px">SAP</div>
-        <span style="color:rgba(255,255,255,.55);font-size:12.5px">Discover SAP &nbsp;·&nbsp; Murdoku</span>
+        <span style="color:rgba(255,255,255,.55);font-size:12.5px">Discover SAP &nbsp;·&nbsp; Solve the Mystery</span>
       </div>
       <div class="sl-eyebrow">Case File #001</div>
       <div class="sl-title">Case: Showroom<br>Disaster</div>
@@ -349,16 +384,14 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
       <details class="htp">
         <summary>How to Play <span class="htp-arrow">▼</span></summary>
         <div class="htp-body">
-          <div class="htp-row"><span class="htp-icon">🎯</span><span>Finde den Täter — wer war allein mit dem Laptop im Demo Room?</span></div>
-          <div class="htp-row"><span class="htp-icon">📋</span><span>Klicke Hinweise an → Buchstaben erscheinen auf möglichen Feldern.</span></div>
-          <div class="htp-row"><span class="htp-icon">✋</span><span>Ziehe Verdächtige auf Felder — jede Person nur 1× pro Zeile &amp; Spalte.</span></div>
-          <div class="htp-row"><span class="htp-icon">⚖️</span><span>Klicke "Anklage" wenn alle platziert sind.</span></div>
+          <div class="htp-row"><span class="htp-icon">🎯</span><span>Find the culprit — who was alone with the Laptop in the Demo Room?</span></div>
+          <div class="htp-row"><span class="htp-icon">📋</span><span>Click clues → letters appear on matching cells.</span></div>
+          <div class="htp-row"><span class="htp-icon">✋</span><span>Drag suspects onto cells — one per row &amp; column.</span></div>
+          <div class="htp-row"><span class="htp-icon">⚖️</span><span>Click "Accuse" when all are placed.</span></div>
         </div>
       </details>
 
-      <div class="sl-label">Your Detective Name</div>
-      <input id="usr" class="sl-input" type="text" placeholder="Enter your name…" maxlength="30" autocomplete="off">
-      <button class="sl-btn" onclick="startGame()">Start Investigation &nbsp;→</button>
+      <button class="sl-btn" onclick="goToNameScreen()">Start Investigating &nbsp;→</button>
     </div>
 
     <div class="sr">
@@ -408,7 +441,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
     <div class="sap-badge">SAP</div>
     <div class="tb-sep"></div>
     <div>
-      <div class="tb-title">Murdoku</div>
+      <div class="tb-title">Solve the Mystery</div>
       <div class="tb-sub">Case: Showroom Disaster</div>
     </div>
     <div class="tb-tabs">
@@ -417,7 +450,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
     </div>
     <div class="tb-spacer"></div>
     <div class="tb-stat">⏱ <b id="timerEl">0:00</b></div>
-    <div class="tb-stat" style="margin-left:14px">✏️ <b id="clueEl">0</b> Notizen</div>
+    <div class="tb-stat" style="margin-left:14px">✏️ <b id="clueEl">0</b> Notes</div>
     <button class="tb-help" onclick="openHelp()" title="How to Play">?</button>
   </div>
 
@@ -426,7 +459,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
     <div class="cp">
       <div class="cp-hdr">
         <div class="cp-ttl">Evidence Board</div>
-        <div class="cp-desc">Karte klicken → Notiz-Modus → Felder selbst anklicken</div>
+        <div class="cp-desc">Click card → Note mode → click cells yourself</div>
       </div>
       <div class="cp-list" id="clueList"></div>
 
@@ -478,7 +511,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 
       <div class="accuse-row">
         <div class="accuse-hint" id="accuseHint">Alle 4 Figuren platzieren</div>
-        <button class="accuse-btn" id="accuseBtn" disabled onclick="submitSolution()">Anklage &nbsp;→</button>
+        <button class="accuse-btn" id="accuseBtn" disabled onclick="submitSolution()">Accuse &nbsp;→</button>
       </div>
     </div>
   </div>
@@ -490,7 +523,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
   <div class="tb">
     <div class="sap-badge">SAP</div>
     <div class="tb-sep"></div>
-    <div class="tb-title">Murdoku &nbsp;·&nbsp; Case Closed</div>
+    <div class="tb-title">Solve the Mystery &nbsp;·&nbsp; Case Closed</div>
   </div>
   <div class="body">
     <div class="el">
@@ -531,7 +564,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
   <div class="tb">
     <div class="sap-badge">SAP</div>
     <div class="tb-sep"></div>
-    <div class="tb-title">Murdoku &nbsp;·&nbsp; Hall of Detectives</div>
+    <div class="tb-title">Solve the Mystery &nbsp;·&nbsp; Hall of Detectives</div>
   </div>
   <div class="body">
     <div class="lb-inner">
@@ -541,6 +574,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
       </div>
       <div class="lb-sub">Case: Showroom Disaster</div>
       <div class="lb-tbl" id="lbTable"></div>
+      <div style="margin-top:16px;text-align:center"><button onclick="openPwModal()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:9px 20px;font:600 13px/1 inherit;cursor:pointer;color:var(--muted)">🔒 Clear Leaderboard</button></div>
     </div>
   </div>
 </div>
@@ -550,7 +584,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 <div class="modal-overlay" id="helpModal">
   <div class="modal-box">
     <div class="modal-top">
-      <div class="modal-ttl">🔍 How to Play Murdoku</div>
+      <div class="modal-ttl">🔍 How to Play Solve the Mystery</div>
       <button class="modal-x" onclick="closeHelp()">✕</button>
     </div>
     <div class="modal-body">
@@ -558,7 +592,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
         <div class="modal-sh">Das Ziel</div>
         <div class="modal-item">
           <span class="modal-icon">🎯</span>
-          <div class="modal-text">Finde den <strong>Täter</strong> — die einzige Person, die allein mit dem Laptop im Demo Room war. Klicke "Anklage", sobald alle korrekt platziert sind.</div>
+          <div class="modal-text">Find the <strong>culprit</strong> — the only person who was alone with the Laptop in the Demo Room. Click "Accuse" once everyone is correctly placed.</div>
         </div>
         <div class="modal-item">
           <span class="modal-icon">📐</span>
@@ -574,7 +608,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
         <div class="modal-sh">Steuerung</div>
         <div class="modal-item">
           <span class="modal-icon">📋</span>
-          <div class="modal-text"><strong>Klicke eine Hinweiskarte</strong> — der Anfangsbuchstabe der Person erscheint auf allen möglichen Feldern. Klicke erneut zum Deaktivieren.</div>
+          <div class="modal-text"><strong>Click a clue card</strong> — der Anfangsbuchstabe der Person erscheint auf allen möglichen Feldern. Klicke erneut zum Deaktivieren.</div>
         </div>
         <div class="modal-item">
           <span class="modal-icon">🖱️</span>
@@ -608,23 +642,58 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
   <div class="tut-box">
     <div class="tut-top">
       <span style="font-size:18px">📋</span>
-      <div class="tut-top-ttl">Spielanleitung</div>
-      <button class="tut-skip" onclick="closeTutorial()">Überspringen</button>
+      <div class="tut-top-ttl">Game Instructions</div>
+      <button class="tut-skip" onclick="closeTutorial()">Skip</button>
     </div>
     <div class="tut-body">
       <div class="tut-step-icon" id="tut-icon">🔍</div>
-      <div class="tut-step-title" id="tut-title">Dein Auftrag</div>
+      <div class="tut-step-title" id="tut-title">Your Mission</div>
       <div class="tut-step-text" id="tut-text"></div>
       <div class="tut-vis" id="tut-vis"></div>
       <div class="tut-dots" id="tut-dots"></div>
     </div>
     <div class="tut-nav">
-      <button class="tut-btn-back" id="tut-back" onclick="tutPrev()">← Zurück</button>
-      <button class="tut-btn-next" id="tut-next" onclick="tutNext()">Weiter →</button>
+      <button class="tut-btn-back" id="tut-back" onclick="tutPrev()">← Back</button>
+      <button class="tut-btn-next" id="tut-next" onclick="tutNext()">Next →</button>
     </div>
   </div>
 </div>
 
+
+
+<!-- ============================================================  NAME ENTRY -->
+<div id="sc-name" class="screen">
+  <div class="ns-wrap">
+    <div class="ns-top">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:clamp(10px,2vh,20px)">
+        <div class="sap-badge" style="background:rgba(255,255,255,.18);color:#fff">SAP</div>
+        <span style="color:rgba(255,255,255,.65);font-size:clamp(13px,1.4vw,17px)">Solve the Mystery</span>
+        <button onclick="show('sc-start')" style="margin-left:auto;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:7px;color:#fff;font:600 clamp(12px,1.2vw,15px)/1 inherit;padding:7px 16px;cursor:pointer">← Back</button>
+      </div>
+      <div class="ns-title">Who Are You, Detective?</div>
+      <div class="ns-sub">Enter a unique name to join the investigation &amp; appear on the leaderboard</div>
+    </div>
+    <div class="ns-display" id="nsDisplay">
+      <span id="nsText"></span><span class="ns-cursor" id="nsCursor">|</span>
+    </div>
+    <div class="ns-error" id="nsError"></div>
+    <div class="ns-keyboard" id="nsKeyboard"></div>
+  </div>
+</div>
+
+<!-- ============================================================  PW MODAL -->
+<div id="pwModal" class="pw-overlay" style="display:none">
+  <div class="pw-box">
+    <div class="pw-title">🔒 Admin Access</div>
+    <div class="pw-sub">Password required to clear the leaderboard</div>
+    <input id="pwInput" class="pw-input" type="password" placeholder="Enter password…" autocomplete="off" onkeydown="if(event.key==='Enter')submitPw()">
+    <div class="pw-err" id="pwErr"></div>
+    <div class="pw-btns">
+      <button class="pw-btn" onclick="closePwModal()">Cancel</button>
+      <button class="pw-btn pw-btn-ok" onclick="submitPw()">Confirm</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================  PICKER -->
 <div id="picker"></div>
@@ -742,17 +811,17 @@ const PEOPLE = [
 
 const CLUES = [
   { id:'c1', pid:'marco',   name:'Marco',
-    txt:'Ein Zeuge sah Marco in der Küche.',
-    tip:'Die Küche ist der untere linke Bereich des Gebäudes (Zeilen 3–4, Spalten 1–2). Darin befanden sich genau zwei Figuren.' },
+    txt:'A witness spotted Marco in the kitchen.',
+    tip:'The kitchen is the lower-left area (Rows 3–4, Cols 1–2). Exactly two figures were there.' },
   { id:'c2', pid:'bastian', name:'Bastian',
-    txt:'Bastian stand direkt nördlich der Topfpflanze 🌿.',
-    tip:'Die Topfpflanze 🌿 steht in Zeile 4, Spalte 2. Direkt nördlich davon = ein Feld nach oben → Zeile 3, Spalte 2.' },
+    txt:'Bastian was standing directly north of the potted plant 🌿.',
+    tip:'The potted plant 🌿 is in Row 4, Col 2. Directly north = one cell up → Row 3, Col 2.' },
   { id:'c3', pid:'laptop',  name:'Laptop',
-    txt:'Der Laptop wurde im Demo Room gefunden — in der obersten Zeile.',
-    tip:'Der Demo Room ist der obere rechte Bereich (Zeilen 1–2, Spalten 3–4). „Oberste Zeile" = Zeile 1.' },
+    txt:'The laptop was found in the Demo Room — in the top row.',
+    tip:'The Demo Room is the upper-right area (Rows 1–2, Cols 3–4). "Top row" = Row 1.' },
   { id:'c4', pid:'sophie',  name:'Sophie',
-    txt:'Sophie stand an der östlichsten (rechten) Außenwand des Gebäudes.',
-    tip:'Die östlichste Wand = Spalte 4, ganz rechts. Im Demo Room befand sich neben dem Laptop noch genau eine weitere Person.' }
+    txt:'Sophie was spotted at the easternmost (right) outer wall of the building.',
+    tip:'The easternmost wall = Col 4, far right. Besides the laptop, exactly one more person was in the Demo Room.' }
 ];
 
 // Solution: personId → [row, col]  (0-indexed)
@@ -880,9 +949,9 @@ function updateMarkModeBar() {
     bar.style.color       = p.color;
     $('markModeIcon').textContent = '✏️';
     $('markModeTxt').innerHTML =
-      `Notiz-Modus: <strong>${p.name}</strong> — klicke leere Felder um `
+      `Note Mode: <strong>${p.name}</strong> — click cells to place `
       + `<span style="background:${p.color};color:white;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:800">${p.name[0]}</span>`
-      + ` zu setzen / entfernen`;
+      + ` to set / remove`;
   } else {
     bar.style.display = 'none';
   }
@@ -924,8 +993,8 @@ const TUTS = [
   /* ---- Step 1: Das Konzept ---- */
   {
     icon: '🗺️',
-    title: 'Das Konzept',
-    text: '3 Verdächtige und der Laptop (Tatopfer) werden auf dem Grid platziert — je 1 pro Zeile und Spalte. Die restlichen 12 Felder bleiben leer.',
+    title: 'The Concept',
+    text: '3 suspects and the Laptop (victim) are placed on the grid — 1 per row & column. The remaining 12 cells stay empty.',
     vis: () => `
       <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
         <div style="display:grid;grid-template-columns:repeat(4,32px);grid-template-rows:repeat(4,32px);gap:2px">
@@ -948,50 +1017,50 @@ const TUTS = [
             <span style="background:#0070F2;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">B</span>
             <span style="background:#107E3E;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">S</span>
             <span style="background:#D4900A;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">M</span>
-            = 3 Verdächtige
+            = 3 Suspects
           </span><br>
           <span style="display:inline-flex;align-items:center;gap:4px">
             <span style="background:#4A5568;color:white;border-radius:4px;padding:1px 6px;font-size:10px">💻</span>
-            = Laptop (Tatopfer, keine Person)
+            = Laptop (victim, not a person)
           </span><br>
-          <strong style="color:var(--txt)">12 Felder bleiben leer — das ist normal!</strong>
+          <strong style="color:var(--txt)">12 cells stay empty — that's normal!</strong>
         </div>
       </div>`
   },
   /* ---- Step 2: Die Regel ---- */
   {
     icon: '📐',
-    title: 'Regel: 1 Figur pro Zeile & Spalte',
-    text: 'Jede Zeile und jede Spalte darf nur eine Figur haben (Verdächtiger oder Laptop). Zwei Figuren in Zeile/Spalte → roter Rahmen = Fehler.',
+    title: 'Rule: 1 Figure per Row & Column',
+    text: 'Each row and column may only hold one figure. Two figures in the same row/column → red border = conflict.',
     vis: () => `
       <div style="display:flex;gap:18px;justify-content:center;align-items:flex-start">
         <div style="text-align:center">
-          <div style="font-size:10px;font-weight:700;color:#BB0000;margin-bottom:5px">✗ Falsch</div>
+          <div style="font-size:10px;font-weight:700;color:#BB0000;margin-bottom:5px">✗ Wrong</div>
           <div style="display:grid;grid-template-columns:repeat(2,36px);gap:2px">
             <div style="width:36px;height:36px;border:2.5px solid #BB0000;border-radius:5px;background:#FFE8E8;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#0070F2;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">B</div></div>
             <div style="width:36px;height:36px;border:2.5px solid #BB0000;border-radius:5px;background:#FFE8E8;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
           </div>
-          <div style="font-size:10px;color:#BB0000;margin-top:4px">B+S in Zeile 1 🚫</div>
+          <div style="font-size:10px;color:#BB0000;margin-top:4px">B+S in Row 1 🚫</div>
         </div>
         <div style="text-align:center">
-          <div style="font-size:10px;font-weight:700;color:#107E3E;margin-bottom:5px">✓ Richtig</div>
+          <div style="font-size:10px;font-weight:700;color:#107E3E;margin-bottom:5px">✓ Correct</div>
           <div style="display:grid;grid-template-columns:repeat(2,36px);gap:2px">
             <div style="width:36px;height:36px;border:1.5px solid rgba(0,0,0,.1);border-radius:5px;background:#EBF4FF;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#0070F2;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">B</div></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
             <div style="width:36px;height:36px;border:1.5px solid rgba(0,0,0,.1);border-radius:5px;background:#E8F5E9;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
           </div>
-          <div style="font-size:10px;color:#107E3E;margin-top:4px">Jede Zeile: 1 Person ✓</div>
+          <div style="font-size:10px;color:#107E3E;margin-top:4px">1 figure per row ✓</div>
         </div>
       </div>`
   },
   /* ---- Step 3: Die Räume & Täter ---- */
   {
     icon: '🏠',
-    title: 'Wer war allein mit dem Laptop?',
-    text: 'Das Gebäude hat 4 Räume (je 2×2 Felder). Der Laptop liegt im Demo Room. Finde die Person, die auch im Demo Room war — das ist der Täter.',
+    title: 'Who Was Alone With the Laptop?',
+    text: 'The building has 4 rooms (each 2×2 cells). The Laptop is in the Demo Room. Find the person who was also there — that\'s the culprit.',
     vis: () => `
       <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
         <div style="display:grid;grid-template-columns:repeat(2,88px);gap:3px">
@@ -1006,20 +1075,20 @@ const TUTS = [
           <div style="height:62px;background:#FFF8E1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#C87A00">Kitchen</div>
           <div style="height:62px;background:#F0EEFF;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#6B46C1">Server Room</div>
         </div>
-        <div style="font-size:11px;color:#107E3E;font-weight:600;text-align:center">Wer ist das "?" → Das ist der Täter!</div>
+        <div style="font-size:11px;color:#107E3E;font-weight:600;text-align:center">Who is the "?" → That's the culprit!</div>
       </div>`
   },
   /* ---- Step 4: Hinweise & Notizen ---- */
   {
     icon: '📋',
-    title: 'Hinweise nutzen & Notizen setzen',
-    text: 'Klicke eine Hinweiskarte → Notiz-Modus aktiv. Dann selbst auf Felder klicken um den Anfangsbuchstaben zu setzen. Nochmal klicken entfernt ihn.',
+    title: 'Use Clues & Take Notes',
+    text: 'Click a clue card → note mode activates. Then click cells to place the first letter. Click again to remove it.',
     vis: () => `
       <div style="display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap">
         <div style="background:#fff;border:2px solid #D4900A;border-radius:8px;padding:8px 10px;font-size:11px;text-align:center;min-width:96px">
           <div style="font-weight:700;color:#D4900A">🟡 Marco</div>
-          <div style="color:#6A7580;font-size:10px">in der Küche</div>
-          <div style="font-size:9px;background:#D4900A;color:white;border-radius:4px;padding:1px 6px;margin-top:4px;display:inline-block">AKTIV</div>
+          <div style="color:#6A7580;font-size:10px">in the kitchen</div>
+          <div style="font-size:9px;background:#D4900A;color:white;border-radius:4px;padding:1px 6px;margin-top:4px;display:inline-block">ACTIVE</div>
         </div>
         <div style="font-size:16px;color:#6A7580">→</div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
@@ -1029,15 +1098,15 @@ const TUTS = [
             <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:20px;height:20px;border-radius:50%;background:#D4900A;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">M</div></div>
             <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px">🌿</div>
           </div>
-          <div style="font-size:10px;color:#6A7580">← du klickst selbst!</div>
+          <div style="font-size:10px;color:#6A7580">← you place it yourself!</div>
         </div>
       </div>`
   },
   /* ---- Step 5: Platzieren & Anklage ---- */
   {
     icon: '✋',
-    title: 'Platzieren & Anklage',
-    text: 'Ziehe eine Person aus der Bank auf ein Feld — oder klicke Person an, dann Feld. Alle 4 platziert, kein roter Rahmen → Anklage klicken!',
+    title: 'Place & Accuse',
+    text: 'Drag a suspect from the bench to a cell — or click a suspect then a cell. All 4 placed, no red borders → click Accuse!',
     vis: () => `
       <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
         <div style="display:flex;align-items:center;gap:12px">
@@ -1048,7 +1117,7 @@ const TUTS = [
           <span style="font-size:20px">✋→</span>
           <div style="width:52px;height:52px;border:2.5px dashed #0070F2;border-radius:8px;background:rgba(0,112,242,.06);display:flex;align-items:center;justify-content:center;font-size:22px;color:rgba(0,112,242,.3)">+</div>
         </div>
-        <div style="background:#0070F2;color:white;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700">⚖️ Anklage →</div>
+        <div style="background:#0070F2;color:white;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700">⚖️ Accuse →</div>
       </div>`
   }
 ];
@@ -1081,7 +1150,7 @@ function renderTutorial() {
 
   // next button
   const next = $('tut-next');
-  next.textContent = G.tutStep === TUTS.length - 1 ? 'Los geht\'s! →' : 'Weiter →';
+  next.textContent = G.tutStep === TUTS.length - 1 ? 'Let\'s go! →' : 'Next →';
 }
 
 function tutNext() {
@@ -1108,15 +1177,23 @@ function closeTutorial() {
 /* ================================================================
    SCREENS
    ================================================================ */
-const SCREENS = ['sc-start','sc-game','sc-end','sc-lb'];
-function show(id) { SCREENS.forEach(s=>$(s).classList.remove('active')); $(id).classList.add('active'); }
+const SCREENS = ['sc-start','sc-name','sc-game','sc-end','sc-lb'];
+function show(id) {
+  SCREENS.forEach(s => { const el=$(s); if(el){ el.classList.remove('active'); el.style.display=''; } });
+  const target=$(id);
+  if(target){ target.style.display='flex'; target.classList.add('active'); }
+}
 
 /* ================================================================
    START
    ================================================================ */
 function startGame() {
+  _launchGame();
+}
+function _startGame_unused() {
+  const savedName = G.name || 'Detective';
   G = freshState();
-  G.name = $('usr').value.trim() || 'Detective';
+  G.name = savedName;
   renderClues();
   renderBench();
   renderGrid();
@@ -1160,16 +1237,16 @@ function renderClues() {
       card.style.background  = hexToRgba(p.color, 0.05);
     }
 
-    // Tag: HINWEIS / AKTIV (colored) / ✓ (done)
+    // Tag: CLUE / ACTIVE (colored) / ✓ (done)
     let tagHtml, doneHtml;
     if (done) {
-      tagHtml  = `<span class="cc-tag" style="display:none">HINWEIS</span>`;
+      tagHtml  = `<span class="cc-tag" style="display:none">CLUE</span>`;
       doneHtml = `<span class="cc-done-lbl">✓</span>`;
     } else if (active) {
-      tagHtml  = `<span class="cc-tag" style="background:${hexToRgba(p.color,0.12)};color:${p.color}">AKTIV</span>`;
+      tagHtml  = `<span class="cc-tag" style="background:${hexToRgba(p.color,0.12)};color:${p.color}">ACTIVE</span>`;
       doneHtml = `<span class="cc-done-lbl" style="display:none"></span>`;
     } else {
-      tagHtml  = `<span class="cc-tag">HINWEIS</span>`;
+      tagHtml  = `<span class="cc-tag">CLUE</span>`;
       doneHtml = `<span class="cc-done-lbl" style="display:none"></span>`;
     }
 
@@ -1182,7 +1259,7 @@ function renderClues() {
       </div>
       <div class="cc-txt">${clue.txt}</div>
       ${clue.tip ? `
-        <button class="cc-tip-btn" onclick="event.stopPropagation();toggleTip(this)">💡 Tipp anzeigen</button>
+        <button class="cc-tip-btn" onclick="event.stopPropagation();toggleTip(this)">💡 Show Hint</button>
         <div class="cc-tip-txt">${clue.tip}</div>` : ''}`;
 
     if (!done) {
@@ -1208,7 +1285,7 @@ function getXMarks(r, c) {
 function toggleTip(btn) {
   const tipDiv = btn.nextElementSibling;
   const open = tipDiv.classList.toggle('open');
-  btn.textContent = open ? '🔼 Tipp verbergen' : '💡 Tipp anzeigen';
+  btn.textContent = open ? '🔼 Hide Hint' : '💡 Show Hint';
 }
 
 /* ================================================================
@@ -1222,7 +1299,7 @@ function renderBench() {
   hint.textContent = G.selectedPid
     ? `Click a cell to place ${per(G.selectedPid).name}`
     : allPlaced ? 'All placed — review conflicts, then Accuse'
-    : 'Drag onto grid, or click to select';
+    : 'Drag to grid or click to select';
 
   PEOPLE.forEach(p => {
     const curPos  = posOf(p.id);
@@ -1368,8 +1445,8 @@ function renderGrid(animAt) {
       // Row/column X-marks (elimination badges)
       const xm = getXMarks(r, c);
       let xHtml = '';
-      if (xm.row) { const px=per(xm.row); xHtml+=`<div class="gc-x-row" style="background:${px.color}" title="Zeile belegt von ${px.name}">✕</div>`; }
-      if (xm.col) { const px=per(xm.col); xHtml+=`<div class="gc-x-col" style="background:${px.color}" title="Spalte belegt von ${px.name}">✕</div>`; }
+      if (xm.row) { const px=per(xm.row); xHtml+=`<div class="gc-x-row" style="background:${px.color}" title="Row occupied by ${px.name}">✕</div>`; }
+      if (xm.col) { const px=per(xm.col); xHtml+=`<div class="gc-x-col" style="background:${px.color}" title="Column occupied by ${px.name}">✕</div>`; }
 
       cell.innerHTML = `<div class="gc-hint">+</div>${marksHtml}${xHtml}`;
       // In mark mode: show cell cursor
@@ -1516,13 +1593,13 @@ function updateAccuse() {
   const btn=$('accuseBtn'), hint=$('accuseHint');
   if (n<tot) {
     btn.disabled=true;
-    hint.textContent=`${n} von ${tot} platziert — noch ${tot-n} fehlen`;
+    hint.textContent=`${n} of ${tot} placed — ${tot-n} remaining`;
   } else if (bad.size>0) {
     btn.disabled=true;
-    hint.textContent='⚠️ Konflikt: zwei Figuren in derselben Zeile oder Spalte (roter Rand)';
+    hint.textContent='⚠️ Conflict: two figures in same row or column (red border)';
   } else {
     btn.disabled=false;
-    hint.textContent='Alle platziert — bereit zur Anklage!';
+    hint.textContent='All placed — ready to accuse!';
   }
 }
 
@@ -1532,7 +1609,7 @@ function submitSolution() {
   // Check each clue constraint (Marco→Kitchen, Bastian→Col2, Laptop→Row1, Sophie→Col4)
   for (const clue of CLUES) {
     const cp = posOf(clue.pid);
-    if (!cp) { failMsg = 'Nicht alle Figuren platziert!'; break; }
+    if (!cp) { failMsg = 'Not all figures placed!'; break; }
     if (!clueMatchesCell(clue, cp[0], cp[1])) {
       failMsg = `Tipp nicht erfüllt: ${per(clue.pid).name} steht am falschen Ort!`;
       break;
@@ -1543,7 +1620,7 @@ function submitSolution() {
   if (!failMsg) {
     const sp = posOf('sophie');
     if (!sp || roomOf(sp[0], sp[1]) !== 'demo') {
-      failMsg = 'Wer war noch im Demo Room beim Laptop? Sophie ist nicht dort…';
+      failMsg = 'Who else was in the Demo Room with the Laptop? Sophie is not there…';
     }
   }
 
@@ -1566,7 +1643,7 @@ function revealSolution() {
   G.selectedClue = null;
   Object.keys(G.marks).forEach(k => delete G.marks[k]);
   renderGrid(); renderBench(); renderClues(); updateAccuse(); updateMarkModeBar();
-  showToast('💡 Lösung eingeblendet — klicke jetzt Anklage!');
+  showToast('💡 Solution revealed — now click Accuse!');
 }
 
 function showToast(msg) {
@@ -1585,9 +1662,9 @@ function showEndScreen() {
   $('endSub').textContent   = `Well done, Detective ${G.name}!`;
   $('endScore').textContent = s;
   $('endStats').innerHTML = `
-    <div class="el-stat"><span>⏱</span><span class="el-stat-lbl">Zeit</span><span class="el-stat-val">${fmt(G.tick)}</span></div>
-    <div class="el-stat"><span>✏️</span><span class="el-stat-lbl">Notizen gesetzt</span><span class="el-stat-val">${Object.values(G.marks).reduce((s,m)=>s+m.size,0)}</span></div>
-    <div class="el-stat"><span>❌</span><span class="el-stat-lbl">Falsche Versuche</span><span class="el-stat-val">${G.wrong}</span></div>`;
+    <div class="el-stat"><span>⏱</span><span class="el-stat-lbl">Time</span><span class="el-stat-val">${fmt(G.tick)}</span></div>
+    <div class="el-stat"><span>✏️</span><span class="el-stat-lbl">Notes placed</span><span class="el-stat-val">${Object.values(G.marks).reduce((s,m)=>s+m.size,0)}</span></div>
+    <div class="el-stat"><span>❌</span><span class="el-stat-lbl">Wrong attempts</span><span class="el-stat-val">${G.wrong}</span></div>`;
 
   const murderer = per(MURDERER_ID);
   $('revAv').innerHTML = AV[MURDERER_ID];
@@ -1608,6 +1685,11 @@ function showEndScreen() {
    LEADERBOARD
    ================================================================ */
 const LB_KEY = 'murdoku_lb_v2';
+
+function getLeaderboard() {
+  try { return JSON.parse(localStorage.getItem(LB_KEY)) || []; }
+  catch(e) { return []; }
+}
 
 function saveScore() {
   try {
@@ -1656,12 +1738,149 @@ $('helpModal').addEventListener('click', e => { if (e.target === $('helpModal'))
 /* ================================================================
    RESET
    ================================================================ */
-function resetGame() { stopTimer(); $('usr').value=G.name; show('sc-start'); }
+function resetGame() { stopTimer(); show('sc-start'); }
 
 /* ================================================================
    INIT
    ================================================================ */
-$('usr').addEventListener('keydown', e => { if (e.key==='Enter') startGame(); });
+// Physical keyboard on name screen handled in keydown listener below
+
+/* ============================================================
+   NAME SCREEN + VIRTUAL KEYBOARD
+   ============================================================ */
+let nameBuffer = '';
+
+function goToNameScreen() {
+  nameBuffer = '';
+  // Explicitly hide all screens, show name screen
+  document.querySelectorAll('.screen').forEach(el => {
+    el.classList.remove('active');
+    el.style.display = 'none';
+  });
+  const ns = document.getElementById('sc-name');
+  ns.style.display = 'flex';
+  ns.classList.add('active');
+  // Safe DOM updates
+  const nt = document.getElementById('nsText');
+  if (nt) nt.textContent = '';
+  const ne = document.getElementById('nsError');
+  if (ne) ne.textContent = '';
+  setTimeout(initKeyboard, 80);
+}
+
+function initKeyboard() {
+  const rows = [
+    ['Q','W','E','R','T','Y','U','I','O','P'],
+    ['A','S','D','F','G','H','J','K','L'],
+    ['Z','X','C','V','B','N','M','⌫']
+  ];
+  const kb = $('nsKeyboard'); kb.innerHTML='';
+  rows.forEach(row => {
+    const r = document.createElement('div'); r.className='kb-row';
+    row.forEach(k => {
+      const b = document.createElement('button');
+      b.className = 'kb-key' + (k==='⌫'?' kb-back':'');
+      b.textContent = k;
+      b.addEventListener('pointerdown', e=>{ e.preventDefault(); handleKey(k); });
+      r.appendChild(b);
+    });
+    kb.appendChild(r);
+  });
+  // Space + Go row
+  const last = document.createElement('div'); last.className='kb-row';
+  const sp = document.createElement('button');
+  sp.className='kb-key kb-space'; sp.textContent='SPACE';
+  sp.addEventListener('pointerdown', e=>{ e.preventDefault(); handleKey(' '); });
+  last.appendChild(sp);
+  const go = document.createElement('button');
+  go.className='kb-key kb-go'; go.textContent='Confirm Name →';
+  go.addEventListener('pointerdown', e=>{ e.preventDefault(); confirmName(); });
+  last.appendChild(go);
+  kb.appendChild(last);
+}
+
+function handleKey(k) {
+  if (k==='⌫') { nameBuffer=nameBuffer.slice(0,-1); }
+  else if (k===' ') { if(nameBuffer.length<22) nameBuffer+=' '; }
+  else { if(nameBuffer.length<22) nameBuffer+=k; }
+  updateNameDisplay();
+}
+
+function updateNameDisplay() {
+  $('nsText').textContent = nameBuffer;
+  $('nsError').textContent = '';
+}
+
+function confirmName() {
+  try {
+    const name = nameBuffer.trim();
+    if (!name) { $('nsError').textContent='⚠ Please enter your name first.'; return; }
+    const lb = getLeaderboard();
+    if (lb.some(e=>e.name.toLowerCase()===name.toLowerCase())) {
+      $('nsError').textContent=`"${name}" is already taken — choose a different name.`;
+      return;
+    }
+    G.name = name;
+    _launchGame();
+  } catch(err) {
+    $('nsError').textContent = '⚠ Error: ' + err.message;
+  }
+}
+
+function _launchGame() {
+  const savedName = G.name || 'Detective';
+  G = freshState();
+  G.name = savedName;
+  renderClues();
+  renderBench();
+  renderGrid();
+  updateAccuse();
+  $('timerEl').textContent = '0:00';
+  $('clueEl').textContent  = '0';
+  $('tab-puzzle').classList.add('on');
+  $('tab-lb').classList.remove('on');
+  // Show game screen directly
+  document.querySelectorAll('.screen').forEach(el => {
+    el.classList.remove('active'); el.style.display = 'none';
+  });
+  const sg = document.getElementById('sc-game');
+  sg.style.display = 'flex'; sg.classList.add('active');
+  // Tutorial: defer to avoid any vis() crash blocking screen change
+  setTimeout(() => { try { showTutorial(); } catch(e) { console.warn('tut err', e); } }, 50);
+}
+
+// Physical keyboard support on name screen
+document.addEventListener('keydown', e => {
+  if (!$('sc-name').classList.contains('active')) return;
+  if (e.key==='Backspace') handleKey('⌫');
+  else if (e.key==='Enter') confirmName();
+  else if (e.key===' ') { e.preventDefault(); handleKey(' '); }
+  else if (/^[a-zA-Z0-9]$/.test(e.key)) handleKey(e.key.toUpperCase());
+});
+
+/* ============================================================
+   LEADERBOARD PASSWORD PROTECTION
+   ============================================================ */
+const LB_PW = 'DISCOVER2026';
+
+function openPwModal() {
+  $('pwInput').value=''; $('pwErr').textContent='';
+  $('pwModal').style.display='flex';
+  setTimeout(()=>$('pwInput').focus(),100);
+}
+function closePwModal() { $('pwModal').style.display='none'; }
+function submitPw() {
+  if ($('pwInput').value===LB_PW) {
+    localStorage.removeItem(LB_KEY);
+    closePwModal();
+    renderLB();
+    showToast('✅ Leaderboard cleared');
+  } else {
+    $('pwErr').textContent='Wrong password.';
+    $('pwInput').value='';
+  }
+}
+
 </script>
 </body>
 </html>
