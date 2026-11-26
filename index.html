@@ -24,7 +24,7 @@
   --muted:   #6A7580;
   --border:  #D0D8E0;
   --th:      52px;
-  --cs:      148px;
+  --cs:      160px;
 }
 html, body { width:100%; height:100%; font-family:'72',Arial,sans-serif; background:var(--bg); color:var(--txt); overflow:hidden; }
 
@@ -387,8 +387,66 @@ html, body { width:100%; height:100%; font-family:'72',Arial,sans-serif; backgro
 .medal { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; color:#fff; font-size:13px; font-weight:800; }
 .toast { display:flex; align-items:center; gap:7px; }
 
+
+/* ============================================================  TOUCH-FRIENDLY DIALOGS */
+button { font-family:inherit; }
+.pw-box { padding:30px 34px; gap:14px; }
+.pw-title { font-size:22px; }
+.pw-sub { font-size:15px; }
+.pw-input { font-size:24px; letter-spacing:6px; padding:14px 18px; text-align:center; background:#F8FAFE; cursor:default; }
+.pw-err { font-size:14px; min-height:18px; text-align:center; }
+.pw-kb { display:flex; flex-direction:column; gap:7px; align-items:center; }
+.pw-kb-row { display:flex; gap:7px; }
+.pw-key { width:56px; height:56px; border-radius:10px; border:1.5px solid var(--border); background:#F4F6FA; color:var(--txt);
+          font-size:20px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; touch-action:manipulation; transition:transform .08s, background .1s; }
+.pw-key:hover { background:#E8EEF7; }
+.pw-key:active { transform:scale(.93); background:#D6E4FA; }
+.pw-key-back { width:90px; background:#FDECEC; color:var(--err); border-color:#F3C4C4; font-size:24px; }
+.pw-btns { gap:12px; }
+.pw-btn { font-size:17px; font-weight:700; padding:15px 30px; border-radius:10px; }
+
 /* ============================================================  SCREEN SCALING */
 #app { position:absolute; top:0; left:0; width:1280px; height:800px; --aw:1280px; --ah:800px; transform-origin:0 0; overflow:hidden; }
+
+/* ============================================================  PLAYABILITY: BIGGER + FLOOR-PLAN LOOK */
+.game-grid { position:relative; }
+.room-wm { position:absolute; display:flex; align-items:center; justify-content:center; pointer-events:none; z-index:2;
+           font-size:30px; font-weight:800; letter-spacing:.5px; opacity:.22; text-transform:uppercase; white-space:nowrap; }
+.gc.gc-blk::after { display:none; }
+.gc.gc-blk { cursor:not-allowed; }
+.gc-blk-tile { background:rgba(0,0,0,.065); border-radius:16px; width:118px; height:118px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
+.furn { width:64px; height:64px; display:block; }
+.gc-blk-icon { font-size:inherit; line-height:0; }
+.gc-blk-lbl { font-size:13px; font-weight:600; color:#6A7580; max-width:110px; margin-top:0; }
+.col-hdr { font-size:14px; }
+.col-hdrs { margin-bottom:5px; }
+.row-lbl { font-size:14px; width:30px; padding-right:7px; }
+.col-hdrs { padding-left:30px; }
+.gc-hint { font-size:40px; }
+.gc-av-wrap { width:78px; height:78px; border-width:3px; }
+.gc-av-wrap svg { width:78px; height:78px; }
+.gc-nm { font-size:15px; font-weight:700; }
+.gc-badge { font-size:11px; }
+.gc-person { gap:4px; }
+.cell-marks { inset:8px 8px 42px 8px; gap:6px; }
+.mark-dot { width:42px; height:42px; font-size:18px; }
+.cell-marks > div:not(.mark-dot) { width:42px !important; height:42px !important; }
+.gc-x-row, .gc-x-col { width:30px; height:30px; font-size:15px; bottom:8px; }
+.gc-x-row { left:8px; } .gc-x-col { right:8px; }
+.accuse-hint { font-size:14px; }
+.accuse-btn { font-size:17px; padding:13px 30px; }
+.mark-mode-bar, .select-mode-bar { font-size:14px; padding:10px 16px; }
+.mark-mode-bar .mmb-cancel, .select-mode-bar .mmb-cancel { font-size:20px; }
+/* left panel */
+.cp-ttl { font-size:12.5px; } .cp-desc { font-size:13px; }
+.cc-name { font-size:16px; } .cc-txt { font-size:14.5px; } .cc-tag { font-size:12px; }
+.cc-av, .cc-av svg { width:40px; height:40px; }
+.cc-tip-btn { font-size:13px; } .cc-tip-txt { font-size:13.5px; }
+.bench-hdr { font-size:13px; } .bench-hint { font-size:12.5px; }
+.bench-tile { max-width:96px; }
+.bench-av-wrap, .bench-av-wrap svg { width:58px; height:58px; }
+.bench-name { font-size:13px; } .bench-loc, .bench-select-hint { font-size:11px; }
+.quick-guide { font-size:12.5px; } .quick-guide summary { font-size:13.5px; }
 </style>
 </head>
 <body>
@@ -450,13 +508,13 @@ html, body { width:100%; height:100%; font-family:'72',Arial,sans-serif; backgro
         <text x="214" y="243" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Server</text>
         <text x="214" y="260" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Room</text>
         <rect x="10"  y="10"  width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
-        <svg x="23" y="15" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="12" rx="2"/><line x1="12" y1="15" x2="12" y2="20"/><line x1="7" y1="20" x2="17" y2="20"/></g></svg>
+        <svg x="21" y="12" width="28" height="28" viewBox="0 0 64 64"><rect x="5" y="7" width="54" height="38" rx="4" fill="#2B2F36"/><rect x="8" y="10" width="48" height="28" rx="1.5" fill="#0F141B"/><path d="M8 10h22L18 38H8z" fill="#fff" opacity=".08"/><path d="M5 37h54v4a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" fill="#D5DAE1"/><circle cx="32" cy="41" r="1.3" fill="#9AA1AB"/><path d="M27 45h10l2.5 9.5h-15z" fill="#B7BDC6"/><rect x="19" y="53.5" width="26" height="4.5" rx="2.2" fill="#9EA5AF"/></svg>
         <text x="35"  y="51"  text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Desk</text>
         <rect x="154" y="154" width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
-        <svg x="167" y="159" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="14" x2="20" y2="14"/><circle cx="8" cy="5" r="1" fill="#8B95A5"/><circle cx="8" cy="11" r="1" fill="#8B95A5"/><circle cx="8" cy="17" r="1" fill="#8B95A5"/></g></svg>
+        <svg x="165" y="157" width="28" height="28" viewBox="0 0 64 64"><rect x="13" y="4" width="38" height="57" rx="3.5" fill="#6B7380"/><rect x="45" y="5.5" width="4.5" height="54" fill="#000" opacity=".14"/><rect x="17" y="8" width="26" height="23" rx="2" fill="#9AA3AF"/><rect x="17" y="34" width="26" height="23" rx="2" fill="#9AA3AF"/><rect x="17" y="8" width="26" height="3" rx="1.5" fill="#fff" opacity=".28"/><rect x="17" y="34" width="26" height="3" rx="1.5" fill="#fff" opacity=".28"/><rect x="26" y="13" width="8" height="3.5" rx=".6" fill="#F4F5F7"/><rect x="26" y="39" width="8" height="3.5" rx=".6" fill="#F4F5F7"/><rect x="23.5" y="19" width="13" height="4.5" rx="2.2" fill="#E6E9ED" stroke="#5B6370" stroke-width="1"/><rect x="23.5" y="45" width="13" height="4.5" rx="2.2" fill="#E6E9ED" stroke="#5B6370" stroke-width="1"/></svg>
         <text x="179" y="195" text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Rack</text>
         <rect x="79"  y="223" width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
-        <svg x="92" y="228" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#6B9E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v-5"/><path d="M9.5 7c0 3 2.5 6 2.5 6s2.5-3 2.5-6c0-2-1.1-3.5-2.5-3.5S9.5 5 9.5 7z"/><path d="M7 10c2.5-.5 5 1 5 3"/><path d="M17 10c-2.5-.5-5 1-5 3"/><rect x="9" y="18" width="6" height="3" rx="1" fill="#C4A97D" stroke="#A08B6D"/></g></svg>
+        <svg x="90" y="226" width="28" height="28" viewBox="0 0 64 64"><path d="M32 45C32 34 30 24 25 11" stroke="#2E7D32" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M31.5 33C36 27 42 23.5 48.5 21.5" stroke="#2E7D32" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M30.5 37L22.5 34" stroke="#2E7D32" stroke-width="2.2" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="11" rx="5" ry="8.5" transform="rotate(-22 24 11)" fill="#4CAF50"/><ellipse cx="20.5" cy="23.5" rx="4.6" ry="8.2" transform="rotate(-62 20.5 23.5)" fill="#43A047"/><ellipse cx="35.5" cy="19.5" rx="4.6" ry="8.2" transform="rotate(32 35.5 19.5)" fill="#66BB6A"/><ellipse cx="50" cy="19.5" rx="4.6" ry="7.8" transform="rotate(62 50 19.5)" fill="#4CAF50"/><ellipse cx="41.5" cy="31" rx="4.2" ry="7.4" transform="rotate(112 41.5 31)" fill="#388E3C"/><ellipse cx="19.5" cy="33.5" rx="4.2" ry="7.4" transform="rotate(-100 19.5 33.5)" fill="#66BB6A"/><path d="M20.5 45h23l-3.5 16h-16z" fill="#C8693A"/><path d="M24 61l-1-5h18l-1 5z" fill="#000" opacity=".12"/><rect x="18" y="42" width="28" height="6.5" rx="2.2" fill="#DE8150"/></svg>
         <text x="104" y="264" text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Plant</text>
         <rect x=".5" y=".5" width="283" height="283" fill="none" stroke="#1C2B33" stroke-width="3" rx="4"/>
       </svg>
@@ -535,16 +593,6 @@ html, body { width:100%; height:100%; font-family:'72',Arial,sans-serif; backgro
             <div class="row-lbl">R4</div>
           </div>
           <div class="game-grid" id="gameGrid"></div>
-        </div>
-        <div class="room-strip">
-          <div class="room-row">
-            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--lobby);color:#0057CC">Lobby</div>
-            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--demo);color:#107E3E;margin-left:1px">Demo Room</div>
-          </div>
-          <div class="room-row" style="margin-top:3px">
-            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--kitchen);color:#C87A00">Kitchen</div>
-            <div class="room-lbl" style="width:calc(2*var(--cs));background:var(--server);color:#6B46C1;margin-left:1px">Server Room</div>
-          </div>
         </div>
       </div>
       <div class="accuse-row">
@@ -736,11 +784,24 @@ html, body { width:100%; height:100%; font-family:'72',Arial,sans-serif; backgro
   <div class="pw-box">
     <div class="pw-title"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Admin Access</div>
     <div class="pw-sub">Password required to clear the leaderboard</div>
-    <input id="pwInput" class="pw-input" type="password" placeholder="Enter password…" autocomplete="off" onkeydown="if(event.key==='Enter')submitPw()">
+    <input id="pwInput" class="pw-input" type="password" placeholder="Tap the keys below…" autocomplete="off" readonly inputmode="none">
     <div class="pw-err" id="pwErr"></div>
+    <div class="pw-kb" id="pwKeyboard"></div>
     <div class="pw-btns">
       <button class="pw-btn" onclick="closePwModal()">Cancel</button>
       <button class="pw-btn pw-btn-ok" onclick="submitPw()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================  RESTART CONFIRM -->
+<div id="rsModal" class="pw-overlay" style="display:none">
+  <div class="pw-box" style="min-width:440px">
+    <div class="pw-title"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> Restart the game?</div>
+    <div class="pw-sub">All current progress will be lost and you'll go back to the start screen.</div>
+    <div class="pw-btns" style="margin-top:8px">
+      <button class="pw-btn" onclick="closeRestart()">Cancel</button>
+      <button class="pw-btn pw-btn-ok" onclick="doRestart()">Restart</button>
     </div>
   </div>
 </div>
@@ -807,7 +868,7 @@ const ICONS = {
 };
 const IC_ATTR = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
 function ic(n, style){ return '<svg class="ic" viewBox="0 0 24 24" '+IC_ATTR+(style?' style="'+style+'"':'')+'>'+ICONS[n]+'</svg>'; }
-const PLANT_IC = '<svg class="ic" viewBox="0 0 24 24"><g fill="none" stroke="#6B9E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v-5"/><path d="M9.5 7c0 3 2.5 6 2.5 6s2.5-3 2.5-6c0-2-1.1-3.5-2.5-3.5S9.5 5 9.5 7z"/><path d="M7 10c2.5-.5 5 1 5 3"/><path d="M17 10c-2.5-.5-5 1-5 3"/><rect x="9" y="18" width="6" height="3" rx="1" fill="#C4A97D" stroke="#A08B6D"/></g></svg>';
+const PLANT_IC = '<svg class="ic" style="width:1.35em;height:1.35em;vertical-align:-0.3em" viewBox="0 0 64 64"><path d="M32 45C32 34 30 24 25 11" stroke="#2E7D32" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M31.5 33C36 27 42 23.5 48.5 21.5" stroke="#2E7D32" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M30.5 37L22.5 34" stroke="#2E7D32" stroke-width="2.2" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="11" rx="5" ry="8.5" transform="rotate(-22 24 11)" fill="#4CAF50"/><ellipse cx="20.5" cy="23.5" rx="4.6" ry="8.2" transform="rotate(-62 20.5 23.5)" fill="#43A047"/><ellipse cx="35.5" cy="19.5" rx="4.6" ry="8.2" transform="rotate(32 35.5 19.5)" fill="#66BB6A"/><ellipse cx="50" cy="19.5" rx="4.6" ry="7.8" transform="rotate(62 50 19.5)" fill="#4CAF50"/><ellipse cx="41.5" cy="31" rx="4.2" ry="7.4" transform="rotate(112 41.5 31)" fill="#388E3C"/><ellipse cx="19.5" cy="33.5" rx="4.2" ry="7.4" transform="rotate(-100 19.5 33.5)" fill="#66BB6A"/><path d="M20.5 45h23l-3.5 16h-16z" fill="#C8693A"/><path d="M24 61l-1-5h18l-1 5z" fill="#000" opacity=".12"/><rect x="18" y="42" width="28" height="6.5" rx="2.2" fill="#DE8150"/></svg>';
 
 const AV = {};
 
@@ -892,7 +953,7 @@ AV.ebru = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
 /* ================================================================
    CONSTANTS
    ================================================================ */
-const CS = 148; // cell size px — must match --cs
+const CS = 160; // cell size px — must match --cs
 
 const ROOMS = {
   lobby:   { bg:'#EBF4FF', color:'#0057CC', name:'Lobby'       },
@@ -903,9 +964,9 @@ const ROOMS = {
 const roomOf = (r,c) => r<2 ? (c<2 ? 'lobby':'demo') : (c<2 ? 'kitchen':'server');
 
 const BLOCKED = {
-  '0,0':{ icon:'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="12" rx="2"/><line x1="12" y1="15" x2="12" y2="20"/><line x1="7" y1="20" x2="17" y2="20"/></svg>', lbl:'Standing Desk' },
-  '2,2':{ icon:'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="14" x2="20" y2="14"/><circle cx="8" cy="5" r="1" fill="#8B95A5"/><circle cx="8" cy="11" r="1" fill="#8B95A5"/><circle cx="8" cy="17" r="1" fill="#8B95A5"/></svg>', lbl:'Server Rack' },
-  '3,1':{ icon:'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B9E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v-5"/><path d="M9.5 7c0 3 2.5 6 2.5 6s2.5-3 2.5-6c0-2-1.1-3.5-2.5-3.5S9.5 5 9.5 7z"/><path d="M7 10c2.5-.5 5 1 5 3"/><path d="M17 10c-2.5-.5-5 1-5 3"/><rect x="9" y="18" width="6" height="3" rx="1" fill="#C4A97D" stroke="#A08B6D"/></svg>', lbl:'Potted Plant' }
+  '0,0':{ icon:'<svg class="furn" viewBox="0 0 64 64"><rect x="5" y="7" width="54" height="38" rx="4" fill="#2B2F36"/><rect x="8" y="10" width="48" height="28" rx="1.5" fill="#0F141B"/><path d="M8 10h22L18 38H8z" fill="#fff" opacity=".08"/><path d="M5 37h54v4a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" fill="#D5DAE1"/><circle cx="32" cy="41" r="1.3" fill="#9AA1AB"/><path d="M27 45h10l2.5 9.5h-15z" fill="#B7BDC6"/><rect x="19" y="53.5" width="26" height="4.5" rx="2.2" fill="#9EA5AF"/></svg>', lbl:'Standing Desk' },
+  '2,2':{ icon:'<svg class="furn" viewBox="0 0 64 64"><rect x="13" y="4" width="38" height="57" rx="3.5" fill="#6B7380"/><rect x="45" y="5.5" width="4.5" height="54" fill="#000" opacity=".14"/><rect x="17" y="8" width="26" height="23" rx="2" fill="#9AA3AF"/><rect x="17" y="34" width="26" height="23" rx="2" fill="#9AA3AF"/><rect x="17" y="8" width="26" height="3" rx="1.5" fill="#fff" opacity=".28"/><rect x="17" y="34" width="26" height="3" rx="1.5" fill="#fff" opacity=".28"/><rect x="26" y="13" width="8" height="3.5" rx=".6" fill="#F4F5F7"/><rect x="26" y="39" width="8" height="3.5" rx=".6" fill="#F4F5F7"/><rect x="23.5" y="19" width="13" height="4.5" rx="2.2" fill="#E6E9ED" stroke="#5B6370" stroke-width="1"/><rect x="23.5" y="45" width="13" height="4.5" rx="2.2" fill="#E6E9ED" stroke="#5B6370" stroke-width="1"/></svg>', lbl:'Server Rack' },
+  '3,1':{ icon:'<svg class="furn" viewBox="0 0 64 64"><path d="M32 45C32 34 30 24 25 11" stroke="#2E7D32" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M31.5 33C36 27 42 23.5 48.5 21.5" stroke="#2E7D32" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M30.5 37L22.5 34" stroke="#2E7D32" stroke-width="2.2" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="11" rx="5" ry="8.5" transform="rotate(-22 24 11)" fill="#4CAF50"/><ellipse cx="20.5" cy="23.5" rx="4.6" ry="8.2" transform="rotate(-62 20.5 23.5)" fill="#43A047"/><ellipse cx="35.5" cy="19.5" rx="4.6" ry="8.2" transform="rotate(32 35.5 19.5)" fill="#66BB6A"/><ellipse cx="50" cy="19.5" rx="4.6" ry="7.8" transform="rotate(62 50 19.5)" fill="#4CAF50"/><ellipse cx="41.5" cy="31" rx="4.2" ry="7.4" transform="rotate(112 41.5 31)" fill="#388E3C"/><ellipse cx="19.5" cy="33.5" rx="4.2" ry="7.4" transform="rotate(-100 19.5 33.5)" fill="#66BB6A"/><path d="M20.5 45h23l-3.5 16h-16z" fill="#C8693A"/><path d="M24 61l-1-5h18l-1 5z" fill="#000" opacity=".12"/><rect x="18" y="42" width="28" height="6.5" rx="2.2" fill="#DE8150"/></svg>', lbl:'Potted Plant' }
 };
 
 const PEOPLE = [
@@ -1520,7 +1581,7 @@ function renderGrid(animAt) {
 
     const cell = document.createElement('div');
     cell.className = 'gc' + (blk?' gc-blk':'') + (conf?' gc-conflict':'');
-    cell.style.background = blk ? 'rgba(0,0,0,.04)' : rm.bg;
+    cell.style.background = rm.bg;
     // Show grab cursor on occupied cells (pick up), copy cursor on empty cells (place)
     if (!blk && pid && !G.selectedPid) cell.style.cursor = 'grab';
     else if (!blk && pid && G.selectedPid) cell.style.cursor = 'copy';
@@ -1532,7 +1593,7 @@ function renderGrid(animAt) {
     cell.style.borderRight  = c===3 ? '3px solid #2C3040' : c===1 ? '3px solid #505869' : '1px solid rgba(0,0,0,.1)';
 
     if (blk) {
-      cell.innerHTML = `<div class="gc-blk-icon">${blk.icon}</div><div class="gc-blk-lbl">${blk.lbl}</div>`;
+      cell.innerHTML = `<div class="gc-blk-tile"><div class="gc-blk-icon">${blk.icon}</div><div class="gc-blk-lbl">${blk.lbl}</div></div>`;
     } else if (pid) {
       const p   = per(pid);
       const anim = (animAt && animAt[0]===r && animAt[1]===c) ? ' pop' : '';
@@ -1646,6 +1707,15 @@ function renderGrid(animAt) {
 
     el.appendChild(cell);
   }
+  // Room names painted across each 2×2 room
+  [['lobby',0,0],['demo',0,2],['kitchen',2,0],['server',2,2]].forEach(([k,r0,c0]) => {
+    const rmn = ROOMS[k];
+    const d = document.createElement('div');
+    d.className = 'room-wm';
+    d.style.cssText = `left:${c0*CS}px;top:${r0*CS}px;width:${2*CS}px;height:${2*CS}px;color:${rmn.color}`;
+    d.textContent = rmn.name;
+    el.appendChild(d);
+  });
 }
 
 /* ================================================================
@@ -1904,8 +1974,17 @@ $('helpModal').addEventListener('click', e => { if (e.target === $('helpModal'))
    RESET
    ================================================================ */
 function resetGame() { stopTimer(); show('sc-start'); }
-function confirmRestart() {
-  if (confirm('Restart the game? All current progress will be lost.')) resetGame();
+function confirmRestart() { $('rsModal').style.display='flex'; }
+function closeRestart()   { $('rsModal').style.display='none'; }
+function doRestart() {
+  closeRestart();
+  closePicker();
+  closeHelp();
+  $('tut-overlay').classList.add('hidden');
+  G.selectedPid = null; G.selectedClue = null;
+  resetGame();
+}
+function _unused_confirm() {
 }
 
 /* ================================================================
@@ -2031,14 +2110,50 @@ document.addEventListener('keydown', e => {
    ============================================================ */
 const LB_PW = 'DISCOVER2026';
 
+function pwIsOpen() { return $('pwModal').style.display === 'flex'; }
+function buildPwKeyboard() {
+  const rows = [
+    ['1','2','3','4','5','6','7','8','9','0'],
+    ['Q','W','E','R','T','Y','U','I','O','P'],
+    ['A','S','D','F','G','H','J','K','L'],
+    ['Z','X','C','V','B','N','M','⌫']
+  ];
+  const kb = $('pwKeyboard'); kb.innerHTML = '';
+  rows.forEach(row => {
+    const r = document.createElement('div'); r.className = 'pw-kb-row';
+    row.forEach(k => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pw-key' + (k==='⌫' ? ' pw-key-back' : '');
+      if (k==='⌫') b.innerHTML = ic('backspace'); else b.textContent = k;
+      b.addEventListener('pointerdown', e => { e.preventDefault(); pwKey(k); });
+      r.appendChild(b);
+    });
+    kb.appendChild(r);
+  });
+}
+function pwKey(k) {
+  const inp = $('pwInput');
+  if (k==='⌫') inp.value = inp.value.slice(0,-1);
+  else if (inp.value.length < 24) inp.value += k;
+  $('pwErr').textContent = '';
+}
 function openPwModal() {
   $('pwInput').value=''; $('pwErr').textContent='';
+  buildPwKeyboard();
   $('pwModal').style.display='flex';
-  setTimeout(()=>$('pwInput').focus(),100);
 }
 function closePwModal() { $('pwModal').style.display='none'; }
+// physical keyboard still works while the password box is open
+document.addEventListener('keydown', e => {
+  if (!pwIsOpen()) return;
+  if (e.key==='Enter') { e.preventDefault(); submitPw(); }
+  else if (e.key==='Escape') closePwModal();
+  else if (e.key==='Backspace') { e.preventDefault(); pwKey('⌫'); }
+  else if (/^[a-zA-Z0-9]$/.test(e.key)) pwKey(e.key.toUpperCase());
+});
 function submitPw() {
-  if ($('pwInput').value===LB_PW) {
+  if ($('pwInput').value.toUpperCase()===LB_PW) {
     localStorage.removeItem(LB_KEY);
     closePwModal();
     renderLB();
