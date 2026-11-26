@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solve the Mystery — Case: Showroom Disaster</title>
 <meta name="description" content="Discover SAP: Solve the Mystery — a logic puzzle game. Use the clues to find who sabotaged the demo laptop in the Discovery Showroom.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230070F2' stroke-width='2.6' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.3-4.3'/></svg>">
 <style>
 /* ============================================================  RESET */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,9 +24,9 @@
   --muted:   #6A7580;
   --border:  #D0D8E0;
   --th:      52px;
-  --cs:      158px;
+  --cs:      148px;
 }
-html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg); color:var(--txt); overflow:hidden; }
+html, body { width:100%; height:100%; font-family:'72',Arial,sans-serif; background:var(--bg); color:var(--txt); overflow:hidden; }
 
 /* ============================================================  SCREENS */
 .screen { display:none; width:100%; height:100%; flex-direction:column; overflow:hidden; }
@@ -129,7 +129,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 .bench-select-hint { font-size:9px; color:var(--blue); text-align:center; }
 
 /* ---- Grid Panel ---- */
-.gp  { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 28px; gap:14px; overflow:auto; }
+.gp  { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 28px; gap:14px; overflow:auto; }
 .gw  { position:relative; }
 .col-hdrs { display:flex; padding-left:26px; margin-bottom:3px; }
 .col-hdr  { width:var(--cs); text-align:center; font-size:11px; font-weight:700; color:var(--muted); }
@@ -158,8 +158,10 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 .gc:hover:not(.gc-blk) .gc-hint { opacity:1; }
 
 /* person tile in grid */
-.gc-person { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:grab; }
-.gc-av-wrap { width:44px; height:44px; border-radius:50%; overflow:hidden; border:2.5px solid rgba(255,255,255,.6); box-shadow:0 2px 6px rgba(0,0,0,.22); }
+.gc-person { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:grab; transition:transform .1s; }
+.gc-person:hover { transform:scale(1.08); }
+.gc-person:hover .gc-av-wrap { box-shadow:0 0 0 3px rgba(0,112,242,.4), 0 2px 8px rgba(0,0,0,.25); }
+.gc-av-wrap { width:44px; height:44px; border-radius:50%; overflow:hidden; border:2.5px solid rgba(255,255,255,.6); box-shadow:0 2px 6px rgba(0,0,0,.22); transition:box-shadow .12s; }
 .gc-av-wrap svg { width:44px; height:44px; }
 .gc-av-wrap.victim { border-color:#FF6B6B; box-shadow:0 0 0 2px rgba(187,0,0,.2), 0 2px 6px rgba(0,0,0,.22); }
 .gc-nm    { font-size:9.5px; font-weight:600; }
@@ -242,7 +244,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 /* ============================================================  HELP MODAL */
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:9000; display:none; align-items:center; justify-content:center; }
 .modal-overlay.open { display:flex; }
-.modal-box  { background:#fff; border-radius:14px; width:min(660px,92vw); max-height:88vh; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+.modal-box  { background:#fff; border-radius:14px; width:min(660px,calc(var(--aw) * 92 / 100)); max-height:calc(var(--ah) * 88 / 100); overflow:hidden; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,.25); }
 .modal-top  { background:var(--blue); padding:20px 24px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
 .modal-ttl  { color:#fff; font-size:17px; font-weight:700; flex:1; }
 .modal-x    { background:rgba(255,255,255,.15); border:none; color:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:.15s; }
@@ -281,7 +283,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 /* ============================================================  TUTORIAL OVERLAY */
 #tut-overlay { position:fixed; inset:0; background:rgba(0,0,0,.78); z-index:8000; display:flex; align-items:center; justify-content:center; }
 #tut-overlay.hidden { display:none; }
-.tut-box { background:#fff; border-radius:16px; width:min(720px,94vw); max-height:92vh; box-shadow:0 24px 70px rgba(0,0,0,.32); overflow:hidden; display:flex; flex-direction:column; }
+.tut-box { background:#fff; border-radius:16px; width:min(720px,calc(var(--aw) * 94 / 100)); max-height:calc(var(--ah) * 92 / 100); box-shadow:0 24px 70px rgba(0,0,0,.32); overflow:hidden; display:flex; flex-direction:column; }
 .tut-top { background:var(--blue); padding:20px 28px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
 .tut-top-ttl { color:#fff; font-size:18px; font-weight:700; }
 .tut-skip { background:rgba(255,255,255,.15); border:none; color:rgba(255,255,255,.85); font:13px/1 inherit; padding:7px 16px; border-radius:20px; cursor:pointer; margin-left:auto; }
@@ -303,9 +305,19 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 /* ============================================================  MARK MODE */
 .gc.mark-mode-cell { cursor:cell !important; }
 .gc.mark-mode-cell:hover { filter:none !important; outline:2.5px dashed rgba(0,112,242,.5) !important; outline-offset:-3px; background:rgba(0,112,242,.05) !important; }
-.mark-mode-bar { background:#EBF4FF; border:1.5px solid rgba(0,112,242,.25); border-radius:9px; padding:9px 14px; display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--blue); }
-.mark-mode-bar .mmb-cancel { background:none; border:none; cursor:pointer; font-size:18px; color:var(--muted); margin-left:auto; padding:2px 6px; border-radius:5px; transition:.12s; }
-.mark-mode-bar .mmb-cancel:hover { background:rgba(0,0,0,.07); color:var(--txt); }
+.mark-mode-bar, .select-mode-bar { border-radius:9px; padding:9px 14px; display:flex; align-items:center; gap:9px; font-size:12.5px; }
+.mark-mode-bar { background:#EBF4FF; border:1.5px solid rgba(0,112,242,.25); color:var(--blue); }
+.select-mode-bar { background:#FFF8E1; border:1.5px solid rgba(212,144,10,.35); color:#996200; }
+
+/* Quick Guide */
+.quick-guide { background:rgba(0,112,242,.04); border:1px solid rgba(0,112,242,.12); border-radius:9px; padding:10px 12px; margin-top:12px; font-size:11px; line-height:1.6; color:var(--txt); }
+.quick-guide summary { cursor:pointer; font-weight:700; font-size:12px; color:var(--blue); user-select:none; }
+.quick-guide summary::-webkit-details-marker { color:var(--blue); }
+.quick-guide ol { margin:6px 0 0; padding-left:18px; }
+.quick-guide li { margin-bottom:3px; }
+.quick-guide kbd { background:#E8ECF0; border:1px solid #C0C8D4; border-radius:3px; padding:1px 5px; font-size:10px; font-family:inherit; }
+.mark-mode-bar .mmb-cancel, .select-mode-bar .mmb-cancel { background:none; border:none; cursor:pointer; font-size:18px; color:var(--muted); margin-left:auto; padding:2px 6px; border-radius:5px; transition:.12s; }
+.mark-mode-bar .mmb-cancel:hover, .select-mode-bar .mmb-cancel:hover { background:rgba(0,0,0,.07); color:var(--txt); }
 
 /* Row/Column X-marks (classic Solve the Mystery elimination) */
 .gc-x-row, .gc-x-col {
@@ -326,23 +338,23 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 .cc-done .cc-tip-btn, .cc-done .cc-tip-txt { display:none; }
 /* ============================================================ NAME SCREEN */
 #sc-name { background:var(--blue); }
-.ns-wrap { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:clamp(16px,3vh,40px) clamp(20px,4vw,60px); gap:clamp(12px,2.2vh,28px); }
-.ns-title { font-size:clamp(26px,4vw,54px); font-weight:800; color:#fff; text-align:center; }
-.ns-sub { font-size:clamp(13px,1.4vw,18px); color:rgba(255,255,255,.75); text-align:center; max-width:600px; }
-.ns-display { background:rgba(255,255,255,.12); border:2.5px solid rgba(255,255,255,.35); border-radius:14px; padding:clamp(10px,1.8vh,22px) clamp(24px,3vw,48px); font-size:clamp(28px,4.5vw,58px); font-weight:800; color:#fff; letter-spacing:5px; text-transform:uppercase; min-width:clamp(280px,55vw,760px); min-height:clamp(60px,8vh,96px); text-align:center; display:flex; align-items:center; justify-content:center; }
+.ns-wrap { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:clamp(16px,calc(var(--ah) * 3 / 100),40px) clamp(20px,calc(var(--aw) * 4 / 100),60px); gap:clamp(12px,calc(var(--ah) * 2.2 / 100),28px); }
+.ns-title { font-size:clamp(26px,calc(var(--aw) * 4 / 100),54px); font-weight:800; color:#fff; text-align:center; }
+.ns-sub { font-size:clamp(13px,calc(var(--aw) * 1.4 / 100),18px); color:rgba(255,255,255,.75); text-align:center; max-width:600px; }
+.ns-display { background:rgba(255,255,255,.12); border:2.5px solid rgba(255,255,255,.35); border-radius:14px; padding:clamp(10px,calc(var(--ah) * 1.8 / 100),22px) clamp(24px,calc(var(--aw) * 3 / 100),48px); font-size:clamp(28px,calc(var(--aw) * 4.5 / 100),58px); font-weight:800; color:#fff; letter-spacing:5px; text-transform:uppercase; min-width:clamp(280px,calc(var(--aw) * 55 / 100),760px); min-height:clamp(60px,calc(var(--ah) * 8 / 100),96px); text-align:center; display:flex; align-items:center; justify-content:center; }
 .ns-cursor { animation:blink 1s step-end infinite; margin-left:2px; }
 @keyframes blink { 50%{opacity:0} }
-.ns-error { font-size:clamp(12px,1.3vw,16px); color:#FFB3B3; min-height:22px; text-align:center; font-weight:600; }
+.ns-error { font-size:clamp(12px,calc(var(--aw) * 1.3 / 100),16px); color:#FFB3B3; min-height:22px; text-align:center; font-weight:600; }
 
 /* Keyboard */
-.ns-keyboard { display:flex; flex-direction:column; gap:min(1vh,8px); }
-.kb-row { display:flex; justify-content:center; gap:min(0.55vw,7px); }
-.kb-key { width:clamp(34px,7.2vw,106px); height:clamp(42px,6.5vh,80px); background:rgba(255,255,255,.16); border:1.5px solid rgba(255,255,255,.22); border-radius:clamp(6px,0.5vw,10px); color:#fff; font:700 clamp(14px,1.9vw,24px)/1 inherit; cursor:pointer; transition:all .1s; display:flex; align-items:center; justify-content:center; }
+.ns-keyboard { display:flex; flex-direction:column; gap:min(calc(var(--ah) * 1 / 100),8px); }
+.kb-row { display:flex; justify-content:center; gap:min(calc(var(--aw) * 0.55 / 100),7px); }
+.kb-key { width:clamp(34px,calc(var(--aw) * 7.2 / 100),106px); height:clamp(42px,calc(var(--ah) * 6.5 / 100),80px); background:rgba(255,255,255,.16); border:1.5px solid rgba(255,255,255,.22); border-radius:clamp(6px,calc(var(--aw) * 0.5 / 100),10px); color:#fff; font:700 clamp(14px,calc(var(--aw) * 1.9 / 100),24px)/1 inherit; cursor:pointer; transition:all .1s; display:flex; align-items:center; justify-content:center; }
 .kb-key:hover { background:rgba(255,255,255,.3); }
 .kb-key:active { transform:scale(.93); background:rgba(255,255,255,.45); }
-.kb-back { width:clamp(54px,10.5vw,154px); background:rgba(255,100,80,.3); }
-.kb-space { width:clamp(140px,26vw,380px); font-size:clamp(11px,1.2vw,15px); letter-spacing:2px; }
-.kb-go { flex:1; min-width:clamp(160px,22vw,340px); background:#fff; color:var(--blue); font-weight:800; }
+.kb-back { width:clamp(54px,calc(var(--aw) * 10.5 / 100),154px); background:rgba(255,100,80,.3); }
+.kb-space { width:clamp(140px,calc(var(--aw) * 26 / 100),380px); font-size:clamp(11px,calc(var(--aw) * 1.2 / 100),15px); letter-spacing:2px; }
+.kb-go { flex:1; min-width:clamp(160px,calc(var(--aw) * 22 / 100),340px); background:#fff; color:var(--blue); font-weight:800; }
 .kb-go:hover { background:#EBF4FF; }
 
 /* PW Modal */
@@ -359,9 +371,28 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 .pw-btn-ok { background:var(--err); color:#fff; border-color:var(--err); }
 .pw-btn-ok:hover { background:#990000; }
 
+
+/* ============================================================  INLINE ICONS */
+.ic { width:1em; height:1em; display:inline-block; vertical-align:-0.15em; flex-shrink:0; overflow:visible; }
+.tut-step-icon { color:var(--blue); line-height:1; }
+.el-icon { line-height:1; }
+.modal-icon, .htp-icon { color:var(--blue); display:flex; }
+.htp-icon { color:#fff; }
+.tb-tab, .tb-stat, .el-btn, .lb-h, .modal-ttl, .pw-title, .cc-tip-btn, .bench-select-hint, .cc-done-lbl { display:inline-flex; align-items:center; gap:6px; }
+.tb-stat { display:flex; }
+.el-btn { justify-content:center; }
+.cc-done-lbl { font-size:14px; }
+.cc-done-lbl[style*="display:none"] { display:none !important; }
+.cc.cc-done .cc-done-lbl { display:inline-flex; }
+.medal { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; color:#fff; font-size:13px; font-weight:800; }
+.toast { display:flex; align-items:center; gap:7px; }
+
+/* ============================================================  SCREEN SCALING */
+#app { position:absolute; top:0; left:0; width:1280px; height:800px; --aw:1280px; --ah:800px; transform-origin:0 0; overflow:hidden; }
 </style>
 </head>
 <body>
+<div id="app">
 
 <!-- ============================================================  START -->
 <div id="sc-start" class="screen active">
@@ -373,7 +404,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
       </div>
       <div class="sl-eyebrow">Case File #001</div>
       <div class="sl-title">Case: Showroom<br>Disaster</div>
-      <div class="sl-diff">⭐ Easy &nbsp;·&nbsp; 4 × 4 Grid</div>
+      <div class="sl-diff"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#FFD54F"><path fill="currentColor" d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg> Easy &nbsp;·&nbsp; 4 × 4 Grid</div>
       <div class="sl-story">
         Just before the Discovery Showroom tour begins, the main demo laptop goes dark.
         Someone sabotaged it. Using witness statements, find out who was alone with the
@@ -381,13 +412,13 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
       </div>
 
       <!-- How to Play collapsible -->
-      <details class="htp">
-        <summary>How to Play <span class="htp-arrow">▼</span></summary>
+      <details class="htp" open>
+        <summary>How to Play <span class="htp-arrow"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></summary>
         <div class="htp-body">
-          <div class="htp-row"><span class="htp-icon">🎯</span><span>Find the culprit — who was alone with the Laptop in the Demo Room?</span></div>
-          <div class="htp-row"><span class="htp-icon">📋</span><span>Click clues → letters appear on matching cells.</span></div>
-          <div class="htp-row"><span class="htp-icon">✋</span><span>Drag suspects onto cells — one per row &amp; column.</span></div>
-          <div class="htp-row"><span class="htp-icon">⚖️</span><span>Click "Accuse" when all are placed.</span></div>
+          <div class="htp-row"><span class="htp-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span><span>Find the culprit — who was alone with the Laptop in the Demo Room?</span></div>
+          <div class="htp-row"><span class="htp-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 12h6M9 16h4"/></svg></span><span>Click clues → letters appear on matching cells.</span></div>
+          <div class="htp-row"><span class="htp-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></svg></span><span>Drag suspects onto cells — one per row &amp; column.</span></div>
+          <div class="htp-row"><span class="htp-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 21h10M3 7h18"/><path d="m6 7-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/></svg></span><span>Click "Accuse" when all are placed.</span></div>
         </div>
       </details>
 
@@ -397,7 +428,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
     <div class="sr">
       <div class="sr-lbl">Building Floor Plan</div>
       <svg viewBox="0 0 284 284"
-           style="width:min(calc(50vw - 80px), calc(100vh - 180px));height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,.15));border-radius:6px;display:block">
+           style="width:min(calc(var(--aw) * 0.5 - 80px), calc(var(--ah) - 180px));height:auto;filter:drop-shadow(0 6px 20px rgba(0,0,0,.15));border-radius:6px;display:block">
         <rect x="1"   y="1"   width="138" height="138" fill="#EBF4FF"/>
         <rect x="145" y="1"   width="138" height="138" fill="#E8F5E9"/>
         <rect x="1"   y="145" width="138" height="138" fill="#FFF8E1"/>
@@ -416,16 +447,16 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
         <text x="214" y="101" text-anchor="middle" fill="#107E3E" font-size="14" font-family="Arial" font-weight="700">Demo</text>
         <text x="214" y="118" text-anchor="middle" fill="#107E3E" font-size="14" font-family="Arial" font-weight="700">Room</text>
         <text x="70"  y="176" text-anchor="middle" fill="#C87A00" font-size="16" font-family="Arial" font-weight="700">Kitchen</text>
-        <text x="214" y="176" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Server</text>
-        <text x="214" y="193" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Room</text>
+        <text x="214" y="243" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Server</text>
+        <text x="214" y="260" text-anchor="middle" fill="#6B46C1" font-size="14" font-family="Arial" font-weight="700">Room</text>
         <rect x="10"  y="10"  width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
-        <text x="35"  y="33"  text-anchor="middle" font-size="20">🖥️</text>
+        <svg x="23" y="15" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="12" rx="2"/><line x1="12" y1="15" x2="12" y2="20"/><line x1="7" y1="20" x2="17" y2="20"/></g></svg>
         <text x="35"  y="51"  text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Desk</text>
         <rect x="154" y="154" width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
-        <text x="179" y="177" text-anchor="middle" font-size="20">🗄️</text>
+        <svg x="167" y="159" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="14" x2="20" y2="14"/><circle cx="8" cy="5" r="1" fill="#8B95A5"/><circle cx="8" cy="11" r="1" fill="#8B95A5"/><circle cx="8" cy="17" r="1" fill="#8B95A5"/></g></svg>
         <text x="179" y="195" text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Rack</text>
         <rect x="79"  y="223" width="50" height="50" rx="5" fill="rgba(0,0,0,.07)"/>
-        <text x="104" y="246" text-anchor="middle" font-size="20">🌿</text>
+        <svg x="92" y="228" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#6B9E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v-5"/><path d="M9.5 7c0 3 2.5 6 2.5 6s2.5-3 2.5-6c0-2-1.1-3.5-2.5-3.5S9.5 5 9.5 7z"/><path d="M7 10c2.5-.5 5 1 5 3"/><path d="M17 10c-2.5-.5-5 1-5 3"/><rect x="9" y="18" width="6" height="3" rx="1" fill="#C4A97D" stroke="#A08B6D"/></g></svg>
         <text x="104" y="264" text-anchor="middle" fill="#8A8A8A" font-size="9" font-family="Arial">Plant</text>
         <rect x=".5" y=".5" width="283" height="283" fill="none" stroke="#1C2B33" stroke-width="3" rx="4"/>
       </svg>
@@ -445,13 +476,14 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
       <div class="tb-sub">Case: Showroom Disaster</div>
     </div>
     <div class="tb-tabs">
-      <button class="tb-tab on" id="tab-puzzle" onclick="switchTab('puzzle')">🔍 Puzzle</button>
-      <button class="tb-tab"    id="tab-lb"     onclick="switchTab('lb')">🏆 Leaderboard</button>
+      <button class="tb-tab on" id="tab-puzzle" onclick="switchTab('puzzle')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg> Puzzle</button>
+      <button class="tb-tab"    id="tab-lb"     onclick="switchTab('lb')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg> Leaderboard</button>
     </div>
     <div class="tb-spacer"></div>
-    <div class="tb-stat">⏱ <b id="timerEl">0:00</b></div>
-    <div class="tb-stat" style="margin-left:14px">✏️ <b id="clueEl">0</b> Notes</div>
+    <div class="tb-stat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg> <b id="timerEl">0:00</b></div>
+    <div class="tb-stat" style="margin-left:14px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg> <b id="clueEl">0</b> Notes</div>
     <button class="tb-help" onclick="openHelp()" title="How to Play">?</button>
+    <button onclick="confirmRestart()" title="Restart Game" style="margin-left:10px;background:#BB0000;border:none;border-radius:8px;padding:8px 18px;font:700 13px/1 inherit;cursor:pointer;color:white;transition:.15s;letter-spacing:.3px;display:inline-flex;align-items:center;gap:6px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> Restart</button>
   </div>
 
   <div class="body">
@@ -471,6 +503,19 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
         </div>
         <div class="bench-row" id="benchRow"></div>
       </div>
+
+      <!-- Always-visible Quick Guide -->
+      <details class="quick-guide" open>
+        <summary>How to Play</summary>
+        <ol>
+          <li><b>Read clues</b> on the Evidence Board above</li>
+          <li><b>Click a clue card</b> → enters Note mode → click cells to mark possible spots</li>
+          <li><b>Click a suspect</b> below → then click a cell to place them</li>
+          <li><b>Click a placed figure</b> on the grid → picks it up so you can move it</li>
+          <li>Each row &amp; column may hold <b>only 1 figure</b></li>
+          <li>All 4 placed + no conflicts → click <b>Accuse</b></li>
+        </ol>
+      </details>
     </div>
 
     <!-- Grid Panel -->
@@ -502,15 +547,20 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
           </div>
         </div>
       </div>
-      <!-- Mark-mode bar — shown when a clue is in mark mode -->
-      <div class="mark-mode-bar" id="markModeBar" style="display:none">
-        <span id="markModeIcon">✏️</span>
-        <span id="markModeTxt">Notiz-Modus aktiv — klicke leere Felder</span>
-        <button class="mmb-cancel" onclick="cancelMarkMode()" title="Notiz-Modus beenden">✕</button>
-      </div>
-
       <div class="accuse-row">
-        <div class="accuse-hint" id="accuseHint">Alle 4 Figuren platzieren</div>
+      <!-- Mark-mode bar — shown when a clue is in mark mode (replaces the hint) -->
+      <div class="mark-mode-bar" id="markModeBar" style="display:none">
+        <span id="markModeIcon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg></span>
+        <span id="markModeTxt">Note mode — click empty cells to mark. <b>Click a suspect to exit &amp; place instead.</b></span>
+        <button class="mmb-cancel" onclick="cancelMarkMode()" title="Exit note mode"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+      <!-- Selection bar — shown when a person is selected for placement -->
+      <div class="select-mode-bar" id="selectModeBar" style="display:none">
+        <span style="display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></svg></span>
+        <span id="selectModeTxt">Select a cell to place</span>
+        <button class="mmb-cancel" onclick="cancelSelection()" title="Cancel selection"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+        <div class="accuse-hint" id="accuseHint">Place all 4 figures first</div>
         <button class="accuse-btn" id="accuseBtn" disabled onclick="submitSolution()">Accuse &nbsp;→</button>
       </div>
     </div>
@@ -527,7 +577,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
   </div>
   <div class="body">
     <div class="el">
-      <div class="el-icon"  id="endIcon">🎉</div>
+      <div class="el-icon"  id="endIcon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg></div>
       <div class="el-title" id="endTitle">Case Solved!</div>
       <div class="el-sub"   id="endSub">Excellent detective work.</div>
       <div class="score-box">
@@ -536,8 +586,8 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
       </div>
       <div class="el-stats" id="endStats"></div>
       <div class="el-btns">
-        <button class="el-btn"         onclick="goLB('end')">🏆 Leaderboard</button>
-        <button class="el-btn primary" onclick="resetGame()">↺ Play Again</button>
+        <button class="el-btn"         onclick="goLB('end')"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg> Leaderboard</button>
+        <button class="el-btn primary" onclick="resetGame()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> Play Again</button>
       </div>
     </div>
     <div class="er">
@@ -545,14 +595,14 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
         <div class="rev-hdr">
           <div class="rev-av" id="revAv"></div>
           <div>
-            <div class="rev-name" id="revName">Sophie</div>
+            <div class="rev-name" id="revName">Ebru</div>
             <div class="rev-role">The Saboteur</div>
           </div>
         </div>
-        <div class="rev-txt" id="revTxt">Sophie was found alone with the Laptop in the Demo Room.</div>
+        <div class="rev-txt" id="revTxt">Ebru was found alone with the Laptop in the Demo Room.</div>
       </div>
       <div class="reveal-flavor fade-up" id="revFlavor" style="animation-delay:.12s">
-        "I was just checking the cable connections," Sophie insisted. But the logs told a different story.
+        "I was just checking the cable connections," Ebru insisted. But the logs told a different story.
       </div>
     </div>
   </div>
@@ -570,11 +620,11 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
     <div class="lb-inner">
       <div class="lb-top">
         <button class="lb-back" onclick="lbBack()">← Back</button>
-        <div class="lb-h">🏆 Leaderboard</div>
+        <div class="lb-h"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg> Leaderboard</div>
       </div>
       <div class="lb-sub">Case: Showroom Disaster</div>
       <div class="lb-tbl" id="lbTable"></div>
-      <div style="margin-top:16px;text-align:center"><button onclick="openPwModal()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:9px 20px;font:600 13px/1 inherit;cursor:pointer;color:var(--muted)">🔒 Clear Leaderboard</button></div>
+      <div style="margin-top:16px;text-align:center"><button onclick="openPwModal()" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:9px 20px;font:600 13px/1 inherit;cursor:pointer;color:var(--muted)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Clear Leaderboard</button></div>
     </div>
   </div>
 </div>
@@ -584,49 +634,49 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 <div class="modal-overlay" id="helpModal">
   <div class="modal-box">
     <div class="modal-top">
-      <div class="modal-ttl">🔍 How to Play Solve the Mystery</div>
-      <button class="modal-x" onclick="closeHelp()">✕</button>
+      <div class="modal-ttl"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg> How to Play Solve the Mystery</div>
+      <button class="modal-x" onclick="closeHelp()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
     <div class="modal-body">
       <div class="modal-sect">
-        <div class="modal-sh">Das Ziel</div>
+        <div class="modal-sh">The Goal</div>
         <div class="modal-item">
-          <span class="modal-icon">🎯</span>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
           <div class="modal-text">Find the <strong>culprit</strong> — the only person who was alone with the Laptop in the Demo Room. Click "Accuse" once everyone is correctly placed.</div>
         </div>
         <div class="modal-item">
-          <span class="modal-icon">📐</span>
-          <div class="modal-text">Platziere alle 4 Personen so, dass <strong>keine zwei in derselben Zeile oder Spalte</strong> stehen (Sudoku-Logik). Blockierte Felder (Möbel) können nicht genutzt werden.</div>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></span>
+          <div class="modal-text">Place all 4 figures so that <strong>no two share the same row or column</strong> (Sudoku logic). Blocked cells (furniture) cannot be used.</div>
         </div>
         <div class="modal-item">
-          <span class="modal-icon">🏠</span>
-          <div class="modal-text">Das Raster hat 4 Räume à 2×2. Der Raum, in dem jemand landet, ist entscheidend — nutze ihn, um den Täter zu identifizieren!</div>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
+          <div class="modal-text">The grid has 4 rooms of 2×2 cells each. The room someone ends up in is key — use it to identify the culprit!</div>
         </div>
       </div>
 
       <div class="modal-sect">
-        <div class="modal-sh">Steuerung</div>
+        <div class="modal-sh">Controls</div>
         <div class="modal-item">
-          <span class="modal-icon">📋</span>
-          <div class="modal-text"><strong>Click a clue card</strong> — der Anfangsbuchstabe der Person erscheint auf allen möglichen Feldern. Klicke erneut zum Deaktivieren.</div>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 12h6M9 16h4"/></svg></span>
+          <div class="modal-text"><strong>Click a clue card</strong> to turn on note mode, then click empty cells to mark them with that person's initial. Click the card again to turn it off.</div>
         </div>
         <div class="modal-item">
-          <span class="modal-icon">🖱️</span>
-          <div class="modal-text"><strong>Ziehe</strong> ein Porträt aus der Bank links unten auf ein freies Feld — oder klicke es an und dann das Zielfeld.</div>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v4"/></svg></span>
+          <div class="modal-text"><strong>Drag</strong> a portrait from the bench (bottom left) onto a free cell — or click it, then click the target cell.</div>
         </div>
         <div class="modal-item">
-          <span class="modal-icon">↩️</span>
-          <div class="modal-text"><strong>Klicke ein besetztes Feld</strong> um das Menü zu öffnen — Person wechseln oder Feld leeren.</div>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></span>
+          <div class="modal-text"><strong>Click a placed figure</strong> to pick it up, then click another cell to move it there.</div>
         </div>
         <div class="modal-item">
-          <span class="modal-icon">🔁</span>
-          <div class="modal-text"><strong>Ziehe eine Person auf dem Grid</strong> auf ein neues Feld zum Verschieben, oder zurück auf die Bank zum Entfernen.</div>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>
+          <div class="modal-text"><strong>Drag a figure on the grid</strong> to a new cell to move it, or back to the bench to remove it.</div>
         </div>
 
-        <div class="modal-sh" style="margin-top:4px">Konflikte</div>
+        <div class="modal-sh" style="margin-top:4px">Conflicts</div>
         <div class="modal-item">
-          <span class="modal-icon">⚠️</span>
-          <div class="modal-text">Felder mit einem <strong style="color:#BB0000">roten Rahmen</strong> haben einen Konflikt — zwei Personen in Zeile oder Spalte. Behebe sie vor der Anklage!</div>
+          <span class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg></span>
+          <div class="modal-text">Cells with a <strong style="color:#BB0000">red border</strong> have a conflict — two figures in the same row or column. Fix them before you accuse!</div>
         </div>
       </div>
     </div>
@@ -641,12 +691,12 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 <div id="tut-overlay" class="hidden">
   <div class="tut-box">
     <div class="tut-top">
-      <span style="font-size:18px">📋</span>
+      <span style="font-size:18px;color:#fff;display:flex"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 12h6M9 16h4"/></svg></span>
       <div class="tut-top-ttl">Game Instructions</div>
       <button class="tut-skip" onclick="closeTutorial()">Skip</button>
     </div>
     <div class="tut-body">
-      <div class="tut-step-icon" id="tut-icon">🔍</div>
+      <div class="tut-step-icon" id="tut-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
       <div class="tut-step-title" id="tut-title">Your Mission</div>
       <div class="tut-step-text" id="tut-text"></div>
       <div class="tut-vis" id="tut-vis"></div>
@@ -665,10 +715,10 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 <div id="sc-name" class="screen">
   <div class="ns-wrap">
     <div class="ns-top">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:clamp(10px,2vh,20px)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:clamp(10px,calc(var(--ah) * 0.02),20px)">
         <div class="sap-badge" style="background:rgba(255,255,255,.18);color:#fff">SAP</div>
-        <span style="color:rgba(255,255,255,.65);font-size:clamp(13px,1.4vw,17px)">Solve the Mystery</span>
-        <button onclick="show('sc-start')" style="margin-left:auto;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:7px;color:#fff;font:600 clamp(12px,1.2vw,15px)/1 inherit;padding:7px 16px;cursor:pointer">← Back</button>
+        <span style="color:rgba(255,255,255,.65);font-size:clamp(13px,calc(var(--aw) * 0.014),17px)">Solve the Mystery</span>
+        <button onclick="show('sc-start')" style="margin-left:auto;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);border-radius:7px;color:#fff;font-weight:600;font-size:clamp(12px,calc(var(--aw) * 0.012),15px);padding:7px 16px;cursor:pointer">← Back</button>
       </div>
       <div class="ns-title">Who Are You, Detective?</div>
       <div class="ns-sub">Enter a unique name to join the investigation &amp; appear on the leaderboard</div>
@@ -684,7 +734,7 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 <!-- ============================================================  PW MODAL -->
 <div id="pwModal" class="pw-overlay" style="display:none">
   <div class="pw-box">
-    <div class="pw-title">🔒 Admin Access</div>
+    <div class="pw-title"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Admin Access</div>
     <div class="pw-sub">Password required to clear the leaderboard</div>
     <input id="pwInput" class="pw-input" type="password" placeholder="Enter password…" autocomplete="off" onkeydown="if(event.key==='Enter')submitPw()">
     <div class="pw-err" id="pwErr"></div>
@@ -699,11 +749,66 @@ html, body { height:100%; font-family:'72',Arial,sans-serif; background:var(--bg
 <div id="picker"></div>
 
 
+</div><!-- /#app -->
+
 <!-- ============================================================  JAVASCRIPT -->
 <script>
 /* ================================================================
+   SCREEN SCALING — the whole UI is laid out for 1280×800 and scaled to fit
+   ================================================================ */
+const BASE_W = 1280, BASE_H = 800;
+let UI_SCALE = 1;
+function fitToScreen() {
+  const app = document.getElementById('app');
+  const vw = window.innerWidth, vh = window.innerHeight;
+  UI_SCALE = Math.min(vw / BASE_W, vh / BASE_H);
+  const w = vw / UI_SCALE, h = vh / UI_SCALE;
+  app.style.width  = w + 'px';
+  app.style.height = h + 'px';
+  app.style.setProperty('--aw', w + 'px');
+  app.style.setProperty('--ah', h + 'px');
+  app.style.transform = 'scale(' + UI_SCALE + ')';
+}
+window.addEventListener('resize', fitToScreen);
+fitToScreen();
+
+/* ================================================================
    AVATAR SVGs  —  viewBox="0 0 60 60", scales via CSS width/height
    ================================================================ */
+const ICONS = {
+  search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+  trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+  clock:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>',
+  pencil:'<path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
+  restart:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  star:'<path fill="currentColor" d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+  chevdown:'<path d="m6 9 6 6 6-6"/>',
+  chevup:'<path d="m18 15-6-6-6 6"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  clipboard:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 12h6M9 16h4"/>',
+  hand:'<path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/>',
+  scale:'<path d="M12 3v18M7 21h10M3 7h18"/><path d="m6 7-3 7a3 3 0 0 0 6 0zM18 7l-3 7a3 3 0 0 0 6 0z"/>',
+  grid:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',
+  home:'<path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  mouse:'<rect x="6" y="3" width="12" height="18" rx="6"/><path d="M12 7v4"/>',
+  undo:'<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  repeat:'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+  alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  checkcircle:'<circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/>',
+  xcircle:'<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6M9 9l6 6"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+  laptop:'<rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20"/>',
+  bulb:'<path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/>',
+  ban:'<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+  backspace:'<path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="m18 9-6 6M12 9l6 6"/>'
+};
+const IC_ATTR = 'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+function ic(n, style){ return '<svg class="ic" viewBox="0 0 24 24" '+IC_ATTR+(style?' style="'+style+'"':'')+'>'+ICONS[n]+'</svg>'; }
+const PLANT_IC = '<svg class="ic" viewBox="0 0 24 24"><g fill="none" stroke="#6B9E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v-5"/><path d="M9.5 7c0 3 2.5 6 2.5 6s2.5-3 2.5-6c0-2-1.1-3.5-2.5-3.5S9.5 5 9.5 7z"/><path d="M7 10c2.5-.5 5 1 5 3"/><path d="M17 10c-2.5-.5-5 1-5 3"/><rect x="9" y="18" width="6" height="3" rx="1" fill="#C4A97D" stroke="#A08B6D"/></g></svg>';
+
 const AV = {};
 
 AV.laptop = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
@@ -763,30 +868,31 @@ AV.sophie = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
 <path d="M10 60 Q19 48 30 47 Q41 48 50 60Z" fill="#085A2A"/>
 </svg>`;
 
-AV.marco = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+AV.ebru = `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
 <circle cx="30" cy="30" r="30" fill="#D4900A"/>
-<ellipse cx="30" cy="20.5" rx="13" ry="8" fill="#111"/>
-<polygon points="20,20 18,8 24,18" fill="#111"/>
-<polygon points="27,17 26,5 31,16" fill="#111"/>
-<polygon points="34,16 36,5 39,17" fill="#111"/>
-<ellipse cx="30" cy="30" rx="13" ry="13.5" fill="#DBA878"/>
-<ellipse cx="17" cy="29" rx="3.5" ry="5" fill="#CB9860"/>
-<ellipse cx="43" cy="29" rx="3.5" ry="5" fill="#CB9860"/>
-<path d="M20.5 22.5 Q24.5 21 28.5 22.5" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-<path d="M31.5 22.5 Q35.5 21 39.5 22.5" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-<circle cx="25" cy="27" r="3" fill="white"/>
-<circle cx="35" cy="27" r="3" fill="white"/>
-<circle cx="25.5" cy="27.5" r="2" fill="#1A2010"/>
-<circle cx="35.5" cy="27.5" r="2" fill="#1A2010"/>
-<path d="M23.5 34 Q27 36.5 30 34 Q33 36.5 36.5 34" stroke="#4A2010" stroke-width="2.3" fill="none" stroke-linecap="round"/>
-<path d="M25.5 38.5 Q30 43 34.5 38.5" stroke="#8A4820" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<ellipse cx="30" cy="18" rx="15" ry="10" fill="#2D1B0E"/>
+<path d="M15 18 Q15 38 20 42" fill="#2D1B0E"/>
+<path d="M45 18 Q45 38 40 42" fill="#2D1B0E"/>
+<ellipse cx="30" cy="30" rx="13" ry="13.5" fill="#E8C49A"/>
+<ellipse cx="17" cy="29" rx="3" ry="4.5" fill="#D4A97A"/>
+<ellipse cx="43" cy="29" rx="3" ry="4.5" fill="#D4A97A"/>
+<path d="M21 23 Q24.5 21.5 28 23" stroke="#2D1B0E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M32 23 Q35.5 21.5 39 23" stroke="#2D1B0E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<ellipse cx="25" cy="27" rx="2.8" ry="3" fill="white"/>
+<ellipse cx="35" cy="27" rx="2.8" ry="3" fill="white"/>
+<circle cx="25.3" cy="27.3" r="2" fill="#3A1A0A"/>
+<circle cx="35.3" cy="27.3" r="2" fill="#3A1A0A"/>
+<path d="M22 25 L21 23.5" stroke="#2D1B0E" stroke-width="1" stroke-linecap="round"/>
+<path d="M38 25 L39 23.5" stroke="#2D1B0E" stroke-width="1" stroke-linecap="round"/>
+<path d="M29 31 Q30 33 31 31" stroke="#C89A6A" stroke-width="1.3" fill="none"/>
+<path d="M25 35 Q30 39 35 35" stroke="#A0603A" stroke-width="2" fill="none" stroke-linecap="round"/>
 <path d="M10 60 Q20 48 30 47 Q40 48 50 60Z" fill="#C08000"/>
 </svg>`;
 
 /* ================================================================
    CONSTANTS
    ================================================================ */
-const CS = 158; // cell size px — must match --cs
+const CS = 148; // cell size px — must match --cs
 
 const ROOMS = {
   lobby:   { bg:'#EBF4FF', color:'#0057CC', name:'Lobby'       },
@@ -797,41 +903,41 @@ const ROOMS = {
 const roomOf = (r,c) => r<2 ? (c<2 ? 'lobby':'demo') : (c<2 ? 'kitchen':'server');
 
 const BLOCKED = {
-  '0,0':{ icon:'🖥️', lbl:'Standing Desk' },
-  '2,2':{ icon:'🗄️', lbl:'Server Rack'   },
-  '3,1':{ icon:'🌿', lbl:'Potted Plant'  }
+  '0,0':{ icon:'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="12" rx="2"/><line x1="12" y1="15" x2="12" y2="20"/><line x1="7" y1="20" x2="17" y2="20"/></svg>', lbl:'Standing Desk' },
+  '2,2':{ icon:'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B95A5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="14" x2="20" y2="14"/><circle cx="8" cy="5" r="1" fill="#8B95A5"/><circle cx="8" cy="11" r="1" fill="#8B95A5"/><circle cx="8" cy="17" r="1" fill="#8B95A5"/></svg>', lbl:'Server Rack' },
+  '3,1':{ icon:'<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#6B9E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v-5"/><path d="M9.5 7c0 3 2.5 6 2.5 6s2.5-3 2.5-6c0-2-1.1-3.5-2.5-3.5S9.5 5 9.5 7z"/><path d="M7 10c2.5-.5 5 1 5 3"/><path d="M17 10c-2.5-.5-5 1-5 3"/><rect x="9" y="18" width="6" height="3" rx="1" fill="#C4A97D" stroke="#A08B6D"/></svg>', lbl:'Potted Plant' }
 };
 
 const PEOPLE = [
   { id:'laptop',  name:'Laptop',  color:'#4A5568', victim:true  },
   { id:'bastian', name:'Bastian', color:'#0070F2', victim:false },
   { id:'sophie',  name:'Sophie',  color:'#107E3E', victim:false },
-  { id:'marco',   name:'Marco',   color:'#D4900A', victim:false }
+  { id:'ebru',    name:'Ebru',    color:'#D4900A', victim:false }
 ];
 
 const CLUES = [
-  { id:'c1', pid:'marco',   name:'Marco',
-    txt:'A witness spotted Marco in the kitchen.',
+  { id:'c1', pid:'sophie',  name:'Sophie',
+    txt:'A witness spotted Sophie in the kitchen.',
     tip:'The kitchen is the lower-left area (Rows 3–4, Cols 1–2). Exactly two figures were there.' },
   { id:'c2', pid:'bastian', name:'Bastian',
-    txt:'Bastian was standing directly north of the potted plant 🌿.',
-    tip:'The potted plant 🌿 is in Row 4, Col 2. Directly north = one cell up → Row 3, Col 2.' },
+    txt:'Bastian was standing directly north of the potted plant '+PLANT_IC+'.',
+    tip:'The potted plant '+PLANT_IC+' is in Row 4, Col 2. Directly north = one cell up → Row 3, Col 2.' },
   { id:'c3', pid:'laptop',  name:'Laptop',
     txt:'The laptop was found in the Demo Room — in the top row.',
     tip:'The Demo Room is the upper-right area (Rows 1–2, Cols 3–4). "Top row" = Row 1.' },
-  { id:'c4', pid:'sophie',  name:'Sophie',
-    txt:'Sophie was spotted at the easternmost (right) outer wall of the building.',
+  { id:'c4', pid:'ebru',    name:'Ebru',
+    txt:'Ebru was spotted at the easternmost (right) outer wall of the building.',
     tip:'The easternmost wall = Col 4, far right. Besides the laptop, exactly one more person was in the Demo Room.' }
 ];
 
 // Solution: personId → [row, col]  (0-indexed)
 const SOL = {
   laptop:  [0, 2],   // Row1 Col3 → Demo Room
-  sophie:  [1, 3],   // Row2 Col4 → Demo Room  ← MURDERER
+  ebru:    [1, 3],   // Row2 Col4 → Demo Room  ← MURDERER
   bastian: [2, 1],   // Row3 Col2 → Kitchen
-  marco:   [3, 0]    // Row4 Col1 → Kitchen
+  sophie:  [3, 0]    // Row4 Col1 → Kitchen
 };
-const MURDERER_ID = 'sophie';
+const MURDERER_ID = 'ebru';
 
 /* ================================================================
    STATE
@@ -906,6 +1012,7 @@ function hexToRgba(hex, alpha) {
 // Toggle mark mode for a clue card
 function selectClue(clueId) {
   G.selectedClue = (G.selectedClue === clueId) ? null : clueId;
+  if (G.selectedClue && G.selectedPid) { G.selectedPid = null; renderBench(); updateSelectBar(); }
   renderClues();
   renderGrid();
   updateMarkModeBar();
@@ -917,6 +1024,32 @@ function cancelMarkMode() {
   renderClues();
   renderGrid();
   updateMarkModeBar();
+}
+
+// Cancel person selection (✕ button on select bar)
+function cancelSelection() {
+  G.selectedPid = null;
+  renderBench();
+  renderGrid();
+  updateSelectBar();
+}
+
+// Show/hide the selection bar when a person is selected
+function syncAccuseHint() {
+  const ah = $('accuseHint');
+  if (ah) ah.style.display = (G.selectedClue || G.selectedPid) ? 'none' : '';
+}
+function updateSelectBar() {
+  const bar = $('selectModeBar');
+  if (!bar) return;
+  syncAccuseHint();
+  if (G.selectedPid) {
+    const p = per(G.selectedPid);
+    $('selectModeTxt').innerHTML = `<b style="color:${p.color}">${p.name}</b> selected — click a cell to place`;
+    bar.style.display = 'flex';
+  } else {
+    bar.style.display = 'none';
+  }
 }
 
 // Toggle a pencil mark for the selected clue's person in cell (r,c)
@@ -940,6 +1073,7 @@ function toggleMark(r, c) {
 function updateMarkModeBar() {
   const bar = $('markModeBar');
   if (!bar) return;
+  syncAccuseHint();
   if (G.selectedClue) {
     const clue = CLUES.find(c => c.id === G.selectedClue);
     const p    = per(clue.pid);
@@ -947,7 +1081,7 @@ function updateMarkModeBar() {
     bar.style.borderColor = p.color;
     bar.style.background  = hexToRgba(p.color, 0.07);
     bar.style.color       = p.color;
-    $('markModeIcon').textContent = '✏️';
+    $('markModeIcon').innerHTML = ic('pencil');
     $('markModeTxt').innerHTML =
       `Note Mode: <strong>${p.name}</strong> — click cells to place `
       + `<span style="background:${p.color};color:white;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:800">${p.name[0]}</span>`
@@ -960,8 +1094,8 @@ function updateMarkModeBar() {
 // Does this clue's constraint match cell (r,c)?
 function clueMatchesCell(clue, r, c) {
   switch (clue.pid) {
-    case 'marco':
-      // Marco → Kitchen cells: r>=2 AND c<=1
+    case 'sophie':
+      // Sophie → Kitchen cells: r>=2 AND c<=1
       return r >= 2 && c <= 1;
     case 'bastian':
       // Bastian → directly north of potted plant (R4C2 → R3C2 = r:2, c:1)
@@ -969,8 +1103,8 @@ function clueMatchesCell(clue, r, c) {
     case 'laptop':
       // Laptop → row 1 (r=0)
       return r === 0;
-    case 'sophie':
-      // Sophie → col 4 (c=3)
+    case 'ebru':
+      // Ebru → col 4 (c=3)
       return c === 3;
     default:        return false;
   }
@@ -992,7 +1126,7 @@ function getMarksForCell(r, c) {
 const TUTS = [
   /* ---- Step 1: Das Konzept ---- */
   {
-    icon: '🗺️',
+    icon: ic('map'),
     title: 'The Concept',
     text: '3 suspects and the Laptop (victim) are placed on the grid — 1 per row & column. The remaining 12 cells stay empty.',
     vis: () => `
@@ -1000,13 +1134,13 @@ const TUTS = [
         <div style="display:grid;grid-template-columns:repeat(4,32px);grid-template-rows:repeat(4,32px);gap:2px">
           ${[
             [null,null,'laptop',null],
-            [null,null,null,'sophie'],
+            [null,null,null,'ebru'],
             [null,'bastian',null,null],
-            ['marco',null,null,null]
+            ['sophie',null,null,null]
           ].flat().map(pid => {
             if(pid){
-              const col={laptop:'#4A5568',bastian:'#0070F2',sophie:'#107E3E',marco:'#D4900A'}[pid];
-              const lbl={laptop:'💻',bastian:'B',sophie:'S',marco:'M'}[pid];
+              const col={laptop:'#4A5568',bastian:'#0070F2',sophie:'#107E3E',ebru:'#D4900A'}[pid];
+              const lbl={laptop:ic('laptop'),bastian:'B',sophie:'S',ebru:'E'}[pid];
               return '<div style="width:32px;height:32px;border-radius:5px;background:'+col+';display:flex;align-items:center;justify-content:center;color:white;font-size:'+(pid==='laptop'?'15':'12')+'px;font-weight:800">'+lbl+'</div>';
             }
             return '<div style="width:32px;height:32px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>';
@@ -1016,11 +1150,11 @@ const TUTS = [
           <span style="display:inline-flex;align-items:center;gap:4px">
             <span style="background:#0070F2;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">B</span>
             <span style="background:#107E3E;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">S</span>
-            <span style="background:#D4900A;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">M</span>
+            <span style="background:#D4900A;color:white;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">E</span>
             = 3 Suspects
           </span><br>
           <span style="display:inline-flex;align-items:center;gap:4px">
-            <span style="background:#4A5568;color:white;border-radius:4px;padding:1px 6px;font-size:10px">💻</span>
+            <span style="background:#4A5568;color:white;border-radius:4px;padding:1px 6px;font-size:10px">${ic('laptop')}</span>
             = Laptop (victim, not a person)
           </span><br>
           <strong style="color:var(--txt)">12 cells stay empty — that's normal!</strong>
@@ -1029,36 +1163,36 @@ const TUTS = [
   },
   /* ---- Step 2: Die Regel ---- */
   {
-    icon: '📐',
+    icon: ic('grid'),
     title: 'Rule: 1 Figure per Row & Column',
     text: 'Each row and column may only hold one figure. Two figures in the same row/column → red border = conflict.',
     vis: () => `
       <div style="display:flex;gap:18px;justify-content:center;align-items:flex-start">
         <div style="text-align:center">
-          <div style="font-size:10px;font-weight:700;color:#BB0000;margin-bottom:5px">✗ Wrong</div>
+          <div style="font-size:10px;font-weight:700;color:#BB0000;margin-bottom:5px">${ic('x')} Wrong</div>
           <div style="display:grid;grid-template-columns:repeat(2,36px);gap:2px">
             <div style="width:36px;height:36px;border:2.5px solid #BB0000;border-radius:5px;background:#FFE8E8;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#0070F2;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">B</div></div>
             <div style="width:36px;height:36px;border:2.5px solid #BB0000;border-radius:5px;background:#FFE8E8;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
           </div>
-          <div style="font-size:10px;color:#BB0000;margin-top:4px">B+S in Row 1 🚫</div>
+          <div style="font-size:10px;color:#BB0000;margin-top:4px">B+S in Row 1 ${ic('ban')}</div>
         </div>
         <div style="text-align:center">
-          <div style="font-size:10px;font-weight:700;color:#107E3E;margin-bottom:5px">✓ Correct</div>
+          <div style="font-size:10px;font-weight:700;color:#107E3E;margin-bottom:5px">${ic('check')} Correct</div>
           <div style="display:grid;grid-template-columns:repeat(2,36px);gap:2px">
             <div style="width:36px;height:36px;border:1.5px solid rgba(0,0,0,.1);border-radius:5px;background:#EBF4FF;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#0070F2;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">B</div></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
             <div style="width:36px;height:36px;border-radius:5px;background:#E8ECF0;border:1px dashed #C0C8D4"></div>
             <div style="width:36px;height:36px;border:1.5px solid rgba(0,0,0,.1);border-radius:5px;background:#E8F5E9;display:flex;align-items:center;justify-content:center"><div style="width:22px;height:22px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
           </div>
-          <div style="font-size:10px;color:#107E3E;margin-top:4px">1 figure per row ✓</div>
+          <div style="font-size:10px;color:#107E3E;margin-top:4px">1 figure per row ${ic('check')}</div>
         </div>
       </div>`
   },
   /* ---- Step 3: Die Räume & Täter ---- */
   {
-    icon: '🏠',
+    icon: ic('home'),
     title: 'Who Was Alone With the Laptop?',
     text: 'The building has 4 rooms (each 2×2 cells). The Laptop is in the Demo Room. Find the person who was also there — that\'s the culprit.',
     vis: () => `
@@ -1068,7 +1202,7 @@ const TUTS = [
           <div style="height:62px;background:#E8F5E9;border-radius:6px;border:2.5px solid #107E3E;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
             <div style="font-size:10px;font-weight:700;color:#107E3E">Demo Room</div>
             <div style="display:flex;gap:5px">
-              <div style="width:24px;height:24px;border-radius:50%;background:#4A5568;display:flex;align-items:center;justify-content:center;font-size:13px" title="Laptop">💻</div>
+              <div style="width:24px;height:24px;border-radius:50%;background:#4A5568;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff" title="Laptop">${ic('laptop')}</div>
               <div style="width:24px;height:24px;border-radius:50%;background:#107E3E;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700">?</div>
             </div>
           </div>
@@ -1080,23 +1214,23 @@ const TUTS = [
   },
   /* ---- Step 4: Hinweise & Notizen ---- */
   {
-    icon: '📋',
+    icon: ic('clipboard'),
     title: 'Use Clues & Take Notes',
     text: 'Click a clue card → note mode activates. Then click cells to place the first letter. Click again to remove it.',
     vis: () => `
       <div style="display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap">
-        <div style="background:#fff;border:2px solid #D4900A;border-radius:8px;padding:8px 10px;font-size:11px;text-align:center;min-width:96px">
-          <div style="font-weight:700;color:#D4900A">🟡 Marco</div>
+        <div style="background:#fff;border:2px solid #107E3E;border-radius:8px;padding:8px 10px;font-size:11px;text-align:center;min-width:96px">
+          <div style="font-weight:700;color:#107E3E"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#107E3E;margin-right:4px"></span>Sophie</div>
           <div style="color:#6A7580;font-size:10px">in the kitchen</div>
-          <div style="font-size:9px;background:#D4900A;color:white;border-radius:4px;padding:1px 6px;margin-top:4px;display:inline-block">ACTIVE</div>
+          <div style="font-size:9px;background:#107E3E;color:white;border-radius:4px;padding:1px 6px;margin-top:4px;display:inline-block">ACTIVE</div>
         </div>
         <div style="font-size:16px;color:#6A7580">→</div>
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
           <div style="display:grid;grid-template-columns:repeat(2,32px);gap:2px">
-            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:20px;height:20px;border-radius:50%;background:#D4900A;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">M</div></div>
+            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:20px;height:20px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
             <div style="width:32px;height:32px;background:#FFF8E1;border:2px dashed rgba(0,112,242,.5);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(0,112,242,.35)">+</div>
-            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:20px;height:20px;border-radius:50%;background:#D4900A;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">M</div></div>
-            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px">🌿</div>
+            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center"><div style="width:20px;height:20px;border-radius:50%;background:#107E3E;color:white;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center">S</div></div>
+            <div style="width:32px;height:32px;background:#FFF8E1;border:1px solid rgba(0,0,0,.12);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px">${PLANT_IC}</div>
           </div>
           <div style="font-size:10px;color:#6A7580">← you place it yourself!</div>
         </div>
@@ -1104,7 +1238,7 @@ const TUTS = [
   },
   /* ---- Step 5: Platzieren & Anklage ---- */
   {
-    icon: '✋',
+    icon: ic('hand'),
     title: 'Place & Accuse',
     text: 'Drag a suspect from the bench to a cell — or click a suspect then a cell. All 4 placed, no red borders → click Accuse!',
     vis: () => `
@@ -1114,10 +1248,10 @@ const TUTS = [
             <div style="width:44px;height:44px;border-radius:50%;background:#0070F2;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:15px;box-shadow:0 2px 8px rgba(0,112,242,.3)">B</div>
             <div style="font-size:10px;font-weight:700;color:#0070F2">Bastian</div>
           </div>
-          <span style="font-size:20px">✋→</span>
+          <span style="font-size:20px;color:#0070F2">${ic('hand')} →</span>
           <div style="width:52px;height:52px;border:2.5px dashed #0070F2;border-radius:8px;background:rgba(0,112,242,.06);display:flex;align-items:center;justify-content:center;font-size:22px;color:rgba(0,112,242,.3)">+</div>
         </div>
-        <div style="background:#0070F2;color:white;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700">⚖️ Accuse →</div>
+        <div style="background:#0070F2;color:white;border-radius:8px;padding:9px 22px;font-size:13px;font-weight:700">${ic('scale')} Accuse →</div>
       </div>`
   }
 ];
@@ -1130,7 +1264,7 @@ function showTutorial() {
 
 function renderTutorial() {
   const step = TUTS[G.tutStep];
-  $('tut-icon').textContent   = step.icon;
+  $('tut-icon').innerHTML     = step.icon;
   $('tut-title').textContent  = step.title;
   $('tut-text').textContent   = step.text;
   $('tut-vis').innerHTML      = step.vis();
@@ -1241,7 +1375,7 @@ function renderClues() {
     let tagHtml, doneHtml;
     if (done) {
       tagHtml  = `<span class="cc-tag" style="display:none">CLUE</span>`;
-      doneHtml = `<span class="cc-done-lbl">✓</span>`;
+      doneHtml = `<span class="cc-done-lbl">${ic('check')}</span>`;
     } else if (active) {
       tagHtml  = `<span class="cc-tag" style="background:${hexToRgba(p.color,0.12)};color:${p.color}">ACTIVE</span>`;
       doneHtml = `<span class="cc-done-lbl" style="display:none"></span>`;
@@ -1259,7 +1393,7 @@ function renderClues() {
       </div>
       <div class="cc-txt">${clue.txt}</div>
       ${clue.tip ? `
-        <button class="cc-tip-btn" onclick="event.stopPropagation();toggleTip(this)">💡 Show Hint</button>
+        <button class="cc-tip-btn" onclick="event.stopPropagation();toggleTip(this)">${ic('bulb')} Show Hint</button>
         <div class="cc-tip-txt">${clue.tip}</div>` : ''}`;
 
     if (!done) {
@@ -1285,7 +1419,7 @@ function getXMarks(r, c) {
 function toggleTip(btn) {
   const tipDiv = btn.nextElementSibling;
   const open = tipDiv.classList.toggle('open');
-  btn.textContent = open ? '🔼 Hide Hint' : '💡 Show Hint';
+  btn.innerHTML = open ? ic('chevup')+' Hide Hint' : ic('bulb')+' Show Hint';
 }
 
 /* ================================================================
@@ -1315,7 +1449,7 @@ function renderBench() {
 
     const locTag = placed
       ? `<span class="bench-loc">R${curPos[0]+1}C${curPos[1]+1}</span>`
-      : `<span class="bench-select-hint">${sel ? '✓ selected' : 'drag / click'}</span>`;
+      : `<span class="bench-select-hint">${sel ? ic('check')+' selected' : 'drag / click'}</span>`;
 
     tile.innerHTML = `
       <div class="bench-av-wrap">${AV[p.id]}</div>
@@ -1336,11 +1470,19 @@ function renderBench() {
       renderBench();
     });
 
-    // --- CLICK to select ---
+    // --- CLICK to select (also cancels note mode) ---
     tile.addEventListener('click', e => {
       if (tile.classList.contains('dragging')) return;
+      // Exit note mode if active so person can be placed
+      if (G.selectedClue) {
+        G.selectedClue = null;
+        updateMarkModeBar();
+        renderClues();
+      }
       G.selectedPid = (G.selectedPid === p.id) ? null : p.id;
       renderBench();
+      renderGrid();
+      updateSelectBar();
     });
 
     row.appendChild(tile);
@@ -1379,6 +1521,9 @@ function renderGrid(animAt) {
     const cell = document.createElement('div');
     cell.className = 'gc' + (blk?' gc-blk':'') + (conf?' gc-conflict':'');
     cell.style.background = blk ? 'rgba(0,0,0,.04)' : rm.bg;
+    // Show grab cursor on occupied cells (pick up), copy cursor on empty cells (place)
+    if (!blk && pid && !G.selectedPid) cell.style.cursor = 'grab';
+    else if (!blk && pid && G.selectedPid) cell.style.cursor = 'copy';
 
     // single-sided borders to avoid doubling
     cell.style.borderTop    = r===0 ? '3px solid #2C3040' : 'none';
@@ -1392,7 +1537,7 @@ function renderGrid(animAt) {
       const p   = per(pid);
       const anim = (animAt && animAt[0]===r && animAt[1]===c) ? ' pop' : '';
       cell.innerHTML = `
-        <div class="gc-person${anim}" draggable="true">
+        <div class="gc-person${anim}" draggable="true" title="Click to pick up ${p.name}">
           <div class="gc-av-wrap${p.victim?' victim':''}">` + AV[pid] + `</div>
           <div class="gc-nm">${p.name}</div>
           ${p.victim ? '<div class="gc-badge">Victim</div>' : ''}
@@ -1413,22 +1558,39 @@ function renderGrid(animAt) {
         renderGrid(); renderBench();
       });
 
-      // click occupied → picker (unless in mark mode)
+      // click occupied → pick up person (also exits note mode)
       cell.addEventListener('click', e => {
-        if (G.selectedClue) return;  // mark mode: occupied cells do nothing
-        if (G.selectedPid) {
+        // Always exit note mode when clicking a placed person
+        if (G.selectedClue) {
+          G.selectedClue = null;
+          updateMarkModeBar();
+          renderClues();
+        }
+        if (G.selectedPid && G.selectedPid !== pid) {
+          // Another person selected → place them here (displaces current occupant back to bench)
           e.stopPropagation();
           placePerson(r, c, G.selectedPid);
           G.selectedPid = null;
+        } else if (G.selectedPid === pid) {
+          // Clicking already-selected person → deselect only
+          G.selectedPid = null;
+          renderBench();
+          renderGrid();
         } else {
-          openPicker(r, c);
+          // Pick up: remove from grid, make selected so user can place elsewhere
+          G.grid[r][c] = null;
+          G.selectedPid = pid;
+          renderBench();
+          renderGrid();
+          updateAccuse();
         }
+        updateSelectBar();
       });
     } else {
       // Build pencil marks for active clues
       const marks = getMarksForCell(r, c);
-      // Order: laptop top-left, bastian top-right, sophie bottom-left, marco bottom-right
-      const ORDER = ['laptop','bastian','sophie','marco'];
+      // Order: laptop top-left, bastian top-right, sophie bottom-left, ebru bottom-right
+      const ORDER = ['laptop','bastian','sophie','ebru'];
       let marksHtml = '';
       if (marks.length > 0) {
         const slots = ORDER.map(pid => {
@@ -1445,21 +1607,22 @@ function renderGrid(animAt) {
       // Row/column X-marks (elimination badges)
       const xm = getXMarks(r, c);
       let xHtml = '';
-      if (xm.row) { const px=per(xm.row); xHtml+=`<div class="gc-x-row" style="background:${px.color}" title="Row occupied by ${px.name}">✕</div>`; }
-      if (xm.col) { const px=per(xm.col); xHtml+=`<div class="gc-x-col" style="background:${px.color}" title="Column occupied by ${px.name}">✕</div>`; }
+      if (xm.row) { const px=per(xm.row); xHtml+=`<div class="gc-x-row" style="background:${px.color}" title="Row occupied by ${px.name}">${ic('x')}</div>`; }
+      if (xm.col) { const px=per(xm.col); xHtml+=`<div class="gc-x-col" style="background:${px.color}" title="Column occupied by ${px.name}">${ic('x')}</div>`; }
 
       cell.innerHTML = `<div class="gc-hint">+</div>${marksHtml}${xHtml}`;
-      // In mark mode: show cell cursor
+      // In mark mode: show pencil cursor; in place mode: show pointer cursor
       if (G.selectedClue) cell.classList.add('mark-mode-cell');
+      else if (G.selectedPid) cell.style.cursor = 'copy';
       cell.addEventListener('click', () => {
         if (G.selectedClue) {
           toggleMark(r, c);           // place / remove pencil mark
         } else if (G.selectedPid) {
           placePerson(r, c, G.selectedPid);
           G.selectedPid = null;
-        } else {
-          openPicker(r, c);
+          updateSelectBar();
         }
+        // empty cell, no selection, no note mode → nothing (no picker noise)
       });
     }
 
@@ -1535,7 +1698,7 @@ function openPicker(r, c) {
     const btn = document.createElement('button');
     btn.className = 'pk-item';
     const locTag = here
-      ? `<span style="margin-left:auto;color:var(--ok);font-size:11px">✓ here</span>`
+      ? `<span style="margin-left:auto;color:var(--ok);font-size:11px">${ic('check')} here</span>`
       : moved
         ? `<span style="margin-left:auto;color:var(--muted);font-size:10px">R${curPos[0]+1}C${curPos[1]+1}</span>`
         : '';
@@ -1550,18 +1713,19 @@ function openPicker(r, c) {
 
   if (G.grid[r][c]) {
     const sep = document.createElement('div'); sep.className='pk-sep'; pk.appendChild(sep);
-    const clr = document.createElement('button'); clr.className='pk-clear'; clr.textContent='✕ Clear cell';
+    const clr = document.createElement('button'); clr.className='pk-clear'; clr.innerHTML=ic('x')+' Clear cell';
     clr.onclick = e => { e.stopPropagation(); placePerson(r, c, null); };
     pk.appendChild(clr);
   }
 
   pk.classList.add('open');
   const gr = $('gameGrid').getBoundingClientRect();
-  const cx = gr.left + c*CS, cy = gr.top + r*CS;
+  const cx = gr.left/UI_SCALE + c*CS, cy = gr.top/UI_SCALE + r*CS;
   const pw = pk.offsetWidth||170, ph = pk.offsetHeight||240;
+  const W = window.innerWidth/UI_SCALE, H = window.innerHeight/UI_SCALE;
   let left = cx+CS+8, top = cy;
-  if (left+pw > window.innerWidth-8)  left = cx-pw-8;
-  if (top+ph  > window.innerHeight-8) top  = window.innerHeight-ph-8;
+  if (left+pw > W-8)  left = cx-pw-8;
+  if (top+ph  > H-8) top  = H-ph-8;
   if (top < 58) top = 58;
   pk.style.left=left+'px'; pk.style.top=top+'px';
 }
@@ -1582,6 +1746,7 @@ document.addEventListener('keydown', e => {
     renderClues();
     renderGrid();
     updateMarkModeBar();
+    updateSelectBar();
   }
 });
 
@@ -1596,7 +1761,7 @@ function updateAccuse() {
     hint.textContent=`${n} of ${tot} placed — ${tot-n} remaining`;
   } else if (bad.size>0) {
     btn.disabled=true;
-    hint.textContent='⚠️ Conflict: two figures in same row or column (red border)';
+    hint.innerHTML=ic('alert')+' Conflict: two figures in same row or column (red border)';
   } else {
     btn.disabled=false;
     hint.textContent='All placed — ready to accuse!';
@@ -1606,21 +1771,21 @@ function updateAccuse() {
 function submitSolution() {
   let failMsg = null;
 
-  // Check each clue constraint (Marco→Kitchen, Bastian→Col2, Laptop→Row1, Sophie→Col4)
+  // Check each clue constraint (Sophie→Kitchen, Bastian→Col2, Laptop→Row1, Ebru→Col4)
   for (const clue of CLUES) {
     const cp = posOf(clue.pid);
     if (!cp) { failMsg = 'Not all figures placed!'; break; }
     if (!clueMatchesCell(clue, cp[0], cp[1])) {
-      failMsg = `Tipp nicht erfüllt: ${per(clue.pid).name} steht am falschen Ort!`;
+      failMsg = `Clue not satisfied: ${per(clue.pid).name} is in the wrong place!`;
       break;
     }
   }
 
-  // Core check: Sophie must be in the Demo Room (with the Laptop)
+  // Core check: Ebru must be in the Demo Room (with the Laptop)
   if (!failMsg) {
-    const sp = posOf('sophie');
-    if (!sp || roomOf(sp[0], sp[1]) !== 'demo') {
-      failMsg = 'Who else was in the Demo Room with the Laptop? Sophie is not there…';
+    const ep = posOf('ebru');
+    if (!ep || roomOf(ep[0], ep[1]) !== 'demo') {
+      failMsg = 'Who else was in the Demo Room with the Laptop? Ebru is not there…';
     }
   }
 
@@ -1632,7 +1797,7 @@ function submitSolution() {
     ge.classList.remove('shaking'); void ge.offsetWidth;
     ge.classList.add('shaking');
     setTimeout(()=>ge.classList.remove('shaking'),440);
-    showToast('❌ ' + failMsg);
+    showToast(ic('xcircle')+' ' + failMsg);
   }
 }
 
@@ -1643,12 +1808,12 @@ function revealSolution() {
   G.selectedClue = null;
   Object.keys(G.marks).forEach(k => delete G.marks[k]);
   renderGrid(); renderBench(); renderClues(); updateAccuse(); updateMarkModeBar();
-  showToast('💡 Solution revealed — now click Accuse!');
+  showToast(ic('bulb')+' Solution revealed — now click Accuse!');
 }
 
 function showToast(msg) {
   document.querySelectorAll('.toast').forEach(t=>t.remove());
-  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  const t=document.createElement('div'); t.className='toast'; t.innerHTML=msg;
   document.body.appendChild(t); setTimeout(()=>t.remove(),2300);
 }
 
@@ -1657,14 +1822,14 @@ function showToast(msg) {
    ================================================================ */
 function showEndScreen() {
   const s = calcScore();
-  $('endIcon').textContent  = '🎉';
+  $('endIcon').innerHTML    = ic('checkcircle');
   $('endTitle').textContent = 'Case Solved!';
   $('endSub').textContent   = `Well done, Detective ${G.name}!`;
   $('endScore').textContent = s;
   $('endStats').innerHTML = `
-    <div class="el-stat"><span>⏱</span><span class="el-stat-lbl">Time</span><span class="el-stat-val">${fmt(G.tick)}</span></div>
-    <div class="el-stat"><span>✏️</span><span class="el-stat-lbl">Notes placed</span><span class="el-stat-val">${Object.values(G.marks).reduce((s,m)=>s+m.size,0)}</span></div>
-    <div class="el-stat"><span>❌</span><span class="el-stat-lbl">Wrong attempts</span><span class="el-stat-val">${G.wrong}</span></div>`;
+    <div class="el-stat"><span>${ic('clock')}</span><span class="el-stat-lbl">Time</span><span class="el-stat-val">${fmt(G.tick)}</span></div>
+    <div class="el-stat"><span>${ic('pencil')}</span><span class="el-stat-lbl">Notes placed</span><span class="el-stat-val">${Object.values(G.marks).reduce((s,m)=>s+m.size,0)}</span></div>
+    <div class="el-stat"><span>${ic('xcircle')}</span><span class="el-stat-lbl">Wrong attempts</span><span class="el-stat-val">${G.wrong}</span></div>`;
 
   const murderer = per(MURDERER_ID);
   $('revAv').innerHTML = AV[MURDERER_ID];
@@ -1704,7 +1869,7 @@ function renderLB() {
   const tbl=$('lbTable'); let lb=[];
   try { lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]'); } catch(e){}
   const myScore = G.done ? calcScore() : -1;
-  const medal = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+  const medal = i => i<3 ? `<span class="medal" style="background:${['#F2B705','#A7B1BC','#C07A3E'][i]}">${i+1}</span>` : i+1;
   if (!lb.length) { tbl.innerHTML='<div class="lb-empty">No scores yet — be the first detective!</div>'; return; }
   tbl.innerHTML =
     `<div class="lb-row lb-hdr"><div>#</div><div>Detective</div><div>Time</div><div>Score</div></div>` +
@@ -1739,6 +1904,9 @@ $('helpModal').addEventListener('click', e => { if (e.target === $('helpModal'))
    RESET
    ================================================================ */
 function resetGame() { stopTimer(); show('sc-start'); }
+function confirmRestart() {
+  if (confirm('Restart the game? All current progress will be lost.')) resetGame();
+}
 
 /* ================================================================
    INIT
@@ -1780,7 +1948,7 @@ function initKeyboard() {
     row.forEach(k => {
       const b = document.createElement('button');
       b.className = 'kb-key' + (k==='⌫'?' kb-back':'');
-      b.textContent = k;
+      if (k==='⌫') b.innerHTML = ic('backspace'); else b.textContent = k;
       b.addEventListener('pointerdown', e=>{ e.preventDefault(); handleKey(k); });
       r.appendChild(b);
     });
@@ -1814,7 +1982,7 @@ function updateNameDisplay() {
 function confirmName() {
   try {
     const name = nameBuffer.trim();
-    if (!name) { $('nsError').textContent='⚠ Please enter your name first.'; return; }
+    if (!name) { $('nsError').innerHTML=ic('alert')+' Please enter your name first.'; return; }
     const lb = getLeaderboard();
     if (lb.some(e=>e.name.toLowerCase()===name.toLowerCase())) {
       $('nsError').textContent=`"${name}" is already taken — choose a different name.`;
@@ -1823,7 +1991,7 @@ function confirmName() {
     G.name = name;
     _launchGame();
   } catch(err) {
-    $('nsError').textContent = '⚠ Error: ' + err.message;
+    $('nsError').textContent = 'Error: ' + err.message;
   }
 }
 
@@ -1874,7 +2042,7 @@ function submitPw() {
     localStorage.removeItem(LB_KEY);
     closePwModal();
     renderLB();
-    showToast('✅ Leaderboard cleared');
+    showToast(ic('checkcircle')+' Leaderboard cleared');
   } else {
     $('pwErr').textContent='Wrong password.';
     $('pwInput').value='';
